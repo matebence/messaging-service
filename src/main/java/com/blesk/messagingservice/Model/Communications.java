@@ -3,7 +3,14 @@ package com.blesk.messagingservice.Model;
 import java.util.Date;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 
 @Document
 public class Messages {
@@ -11,18 +18,33 @@ public class Messages {
     @Id
     private String messageId;
 
+    @Version
+    private Long version;
+
+    @NotNull(message = "")
+    @Size(min = 3, max = 32, message = "")
     private String firstName;
 
+    @NotNull(message = "")
+    @Size(min = 3, max = 32, message = "")
     private String lastName;
 
+    @NotNull(message = "")
+    @Positive(message = "")
     private Long sender;
 
+    @NotNull(message = "")
+    @Size(min = 3, max = 255, message = "")
     private String content;
 
-    private Date date;
+    @NotNull(message = "")
+    @FutureOrPresent(message = "")
+    private Date date = new Date();
 
+    @NotNull(message = "")
     private MessageType messageType;
 
+    @NotNull(message = "")
     private Conversations conversations;
 
     public Messages() {
