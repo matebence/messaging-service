@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -17,30 +18,51 @@ public class DAOImpl<T> implements DAO<T> {
 
     @Override
     public T save(T t) {
-        return this.mongoTemplate.save(t);
+        try {
+            this.mongoTemplate.save(t);
+            return t;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
     public Boolean update(Class<T> c, String column, String id, Update update) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where(column).is(id));
-        return this.mongoTemplate.updateFirst(query, update, c).getModifiedCount() == 1;
+        try {
+            Query query = new Query();
+            query.addCriteria(Criteria.where(column).is(id));
+            return this.mongoTemplate.updateFirst(query, update, c).getModifiedCount() == 1;
+        } catch (Exception e) {
+            return Boolean.FALSE;
+        }
     }
 
     @Override
     public Boolean delete(T t) {
-        return mongoTemplate.remove(t).getDeletedCount() == 1;
+        try {
+            return mongoTemplate.remove(t).getDeletedCount() == 1;
+        } catch (Exception e) {
+            return Boolean.FALSE;
+        }
     }
 
     @Override
     public T get(Class<T> c, String column, String id) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where(column).is(id));
-        return mongoTemplate.findOne(query, c);
+        try {
+            Query query = new Query();
+            query.addCriteria(Criteria.where(column).is(id));
+            return mongoTemplate.findOne(query, c);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
     public List<T> getAll(Class<T> c) {
-        return mongoTemplate.findAll(c);
+        try {
+            return mongoTemplate.findAll(c);
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 }

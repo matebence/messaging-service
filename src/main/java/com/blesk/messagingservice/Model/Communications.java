@@ -2,76 +2,58 @@ package com.blesk.messagingservice.Model;
 
 import java.util.Date;
 
+import com.blesk.messagingservice.Value.Messages;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 @Document
-public class Messages {
+public class Communications {
 
     @Id
-    private String messageId;
+    private String communicationId;
 
     @Version
     private Long version;
 
-    @NotNull(message = "")
-    @Size(min = 3, max = 32, message = "")
-    private String firstName;
+    @NotNull(message = Messages.COMMUNICATION_USER_NAME_NOT_NULL)
+    @Size(min = 5, max = 255, message = Messages.COMMUNICATION_USER_NAME_SIZE)
+    private String userName;
 
-    @NotNull(message = "")
-    @Size(min = 3, max = 32, message = "")
-    private String lastName;
-
-    @NotNull(message = "")
-    @Positive(message = "")
+    @NotNull(message = Messages.COMMUNICATION_SENDER_NOT_NULL)
+    @Positive(message = Messages.COMMUNICATION_SENDER_POSITIVE)
     private Long sender;
 
-    @NotNull(message = "")
-    @Size(min = 3, max = 255, message = "")
+    @NotNull(message = Messages.COMMUNICATION_CONTENT_NOT_NULL)
+    @Size(min = 3, max = 255, message = Messages.COMMUNICATION_CONTENT_SIZE)
     private String content;
 
-    @NotNull(message = "")
-    @FutureOrPresent(message = "")
-    private Date date = new Date();
-
-    @NotNull(message = "")
-    private MessageType messageType;
-
-    @NotNull(message = "")
+    @NotNull(message = Messages.COMMUNICATION_CONVERSATIONS_NOT_NULL)
     private Conversations conversations;
 
-    public Messages() {
+    private Date date = new Date();
+
+    public Communications() {
     }
 
-    public String getMessageId() {
-        return this.messageId;
+    public String getCommunicationId() {
+        return this.communicationId;
     }
 
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
+    public void setCommunicationId(String communicationId) {
+        this.communicationId = communicationId;
     }
 
-    public String getFirstName() {
-        return this.firstName;
+    public String getUserName() {
+        return this.userName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return this.lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public Long getSender() {
@@ -96,14 +78,6 @@ public class Messages {
 
     public void setDate(Date date) {
         this.date = date;
-    }
-
-    public MessageType getMessageType() {
-        return this.messageType;
-    }
-
-    public void setMessageType(MessageType messageType) {
-        this.messageType = messageType;
     }
 
     public Conversations getConversations() {
