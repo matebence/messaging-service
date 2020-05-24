@@ -26,7 +26,7 @@ public class ConversationsDAOImpl extends DAOImpl<Conversations> implements Conv
     public List<Conversations> getAllConversationsByAccountId(Long accountId) {
         try {
             Query query = new Query();
-            query.addCriteria(Criteria.where("participants.users" + accountId).exists(true));
+            query.addCriteria(Criteria.where("participants.accountId").is(accountId));
             return this.mongoTemplate.find(query, Conversations.class);
         } catch (Exception e) {
             return Collections.emptyList();

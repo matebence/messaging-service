@@ -44,18 +44,11 @@ public class Conversations {
 
     private static class Users{
 
-        public static enum ConversationStatus {
-            ONLINE, OFFLINE
-        }
-
         @NotNull(message = Messages.CONVERSATION_USERS_ACCOUNT_ID_NOT_NULL)
         private Long accountId;
 
         @NotNull(message = Messages.CONVERSATION_USERS_USER_NAME_NOT_NULL)
         private String userName;
-
-        @NotNull(message = Messages.CONVERSATION_USERS_STATUS_NOT_NULL)
-        private ConversationStatus conversationStatus;
 
         public Users() {
         }
@@ -74,14 +67,6 @@ public class Conversations {
 
         public void setUserName(String userName) {
             this.userName = userName;
-        }
-
-        public ConversationStatus getConversationStatus() {
-            return this.conversationStatus;
-        }
-
-        public void setConversationStatus(ConversationStatus conversationStatus) {
-            this.conversationStatus = conversationStatus;
         }
     }
 }

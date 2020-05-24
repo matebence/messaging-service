@@ -3,6 +3,7 @@ package com.blesk.messagingservice.Service.Communications;
 import com.blesk.messagingservice.DAO.Conversations.ConversationsDAOImpl;
 import com.blesk.messagingservice.DAO.Communications.CommunicationsDAOImpl;
 import com.blesk.messagingservice.Model.Communications;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ public class CommunicationsServiceImpl implements CommunicationsService {
 
     private CommunicationsDAOImpl communicationsDAO;
 
+    @Autowired
     public CommunicationsServiceImpl(ConversationsDAOImpl conversationsDAO, CommunicationsDAOImpl communicationsDAO){
         this.conversationsDAO = conversationsDAO;
         this.communicationsDAO = communicationsDAO;
