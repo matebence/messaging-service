@@ -1,6 +1,7 @@
 package com.blesk.messagingservice.Component;
 
 import com.blesk.messagingservice.Model.Status;
+import com.blesk.messagingservice.Service.Status.StatusServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -12,10 +13,12 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 public class WebSocketListener {
 
     private SimpMessageSendingOperations simpMessageSendingOperations;
+    private StatusServiceImpl statusService;
 
     @Autowired
-    public WebSocketListener(SimpMessageSendingOperations simpMessageSendingOperations) {
+    public WebSocketListener(SimpMessageSendingOperations simpMessageSendingOperations, StatusServiceImpl statusService) {
         this.simpMessageSendingOperations = simpMessageSendingOperations;
+        this.statusService = statusService;
     }
 
     @EventListener
@@ -28,6 +31,7 @@ public class WebSocketListener {
         status.setState(Status.State.OFFLINE);
         status.setUserName(userName);
 
+        if (this.statusService.createStatus(status) == null) return;
         this.simpMessageSendingOperations.convertAndSend("/status", status);
     }
 }

@@ -1,19 +1,22 @@
 package com.blesk.messagingservice.Service.Communications;
 
 import com.blesk.messagingservice.Model.Communications;
-import org.springframework.data.mongodb.core.query.Update;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface CommunicationsService {
 
     Communications createCommunication(Communications communications);
 
-    Boolean updateCommunication(String id, Update update);
+    Boolean updateCommunication(Communications communication, Communications communications);
 
     Boolean deleteCommunication(Communications communications);
 
     Communications getCommunication(String id);
 
-    List<Communications> getAllCommunications();
+    List<Communications> getAllCommunications(int pageNumber, int pageSize);
+
+    Map<String, Object> searchForCommunication(HashMap<String, HashMap<String, String>> criteria);
 }

@@ -1,21 +1,24 @@
 package com.blesk.messagingservice.Service.Conversations;
 
 import com.blesk.messagingservice.Model.Conversations;
-import org.springframework.data.mongodb.core.query.Update;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface ConversationsService {
 
     Conversations createConversation(Conversations conversations);
 
-    Boolean updateConversation(String id, Update update);
+    Boolean updateConversation(Conversations conversation, Conversations conversations);
 
     Boolean deleteConversation(Conversations conversations);
 
     Conversations getConversation(String id);
 
-    List<Conversations> getAllConversations();
+    List<Conversations> getAllConversations(int pageNumber, int pageSize);
 
     List<Conversations> getAllConversationsByAccontId(Long accountId);
+
+    Map<String, Object> searchForConversation(HashMap<String, HashMap<String, String>> criteria);
 }

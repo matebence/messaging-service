@@ -2,7 +2,9 @@ package com.blesk.messagingservice.DAO;
 
 import org.springframework.data.mongodb.core.query.Update;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface DAO<T> {
 
@@ -14,5 +16,7 @@ public interface DAO<T> {
 
     T get(Class<T> c, String column, String id);
 
-    List<T> getAll(Class<T> c);
+    List<T> getAll(int pageNumber, int pageSize, Class<T> c);
+
+    Map<String, Object> searchBy(Class c, HashMap<String, HashMap<String, String>> criterias, int pageNumber);
 }
