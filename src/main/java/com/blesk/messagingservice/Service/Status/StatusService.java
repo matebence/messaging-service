@@ -18,5 +18,5 @@ public interface StatusService {
 
     List<Status> getAllStatuses(int pageNumber, int pageSize);
 
-    Map<String, Object> searchForStatus(HashMap<String, HashMap<String, String>> criteria);
+    Map<String, Object> searchForStatus(HashMap<String, HashMap<String, String>> criterias);
 }

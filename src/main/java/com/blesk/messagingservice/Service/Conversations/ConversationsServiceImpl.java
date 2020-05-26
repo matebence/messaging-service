@@ -3,7 +3,6 @@ package com.blesk.messagingservice.Service.Conversations;
 import com.blesk.messagingservice.DAO.Conversations.ConversationsDAOImpl;
 import com.blesk.messagingservice.Model.Conversations;
 import com.blesk.messagingservice.Utilitie.Tools;
-import com.blesk.messagingservice.Value.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
@@ -39,20 +38,32 @@ public class ConversationsServiceImpl implements ConversationsService {
 
     @Override
     @Transactional
-    public Boolean deleteConversation(Conversations conversations) {
-        return this.conversationsDAO.delete(conversations);
+    public Boolean deleteConversation(Conversations conversations, boolean su) {
+        if (su){
+            return this.conversationsDAO.delete(conversations);
+        } else{
+            return this.conversationsDAO.softDelete(conversations);
+        }
     }
 
     @Override
     @Transactional
-    public Conversations getConversation(String id) {
-        return this.conversationsDAO.get(Conversations.class, "conversationId", id);
+    public Conversations getConversation(String id, boolean su) {
+        if (su){
+            return this.conversationsDAO.get(Conversations.class, "conversationId", id);
+        } else {
+            return this.conversationsDAO.get("conversationId", id);
+        }
     }
 
     @Override
     @Transactional
-    public List<Conversations> getAllConversations(int pageNumber, int pageSize) {
-        return this.conversationsDAO.getAll(pageNumber, pageSize, Conversations.class);
+    public List<Conversations> getAllConversations(int pageNumber, int pageSize, boolean su) {
+        if (su){
+            return this.conversationsDAO.getAll(Conversations.class, pageNumber, pageSize);
+        } else{
+            return this.conversationsDAO.getAll(pageNumber, pageSize);
+        }
     }
 
     @Override
@@ -63,7 +74,11 @@ public class ConversationsServiceImpl implements ConversationsService {
 
     @Override
     @Transactional
-    public Map<String, Object> searchForConversation(HashMap<String, HashMap<String, String>> criteria) {
-        return this.conversationsDAO.searchBy(Conversations.class, criteria, Integer.parseInt(criteria.get(Keys.PAGINATION).get(Keys.PAGE_NUMBER)));
+    public Map<String, Object> searchForConversation(HashMap<String, HashMap<String, String>> criterias, boolean su) {
+        if (su){
+            return this.conversationsDAO.searchBy(Conversations.class, criterias);
+        } else{
+            return this.conversationsDAO.searchBy(criterias);
+        }
     }
 }

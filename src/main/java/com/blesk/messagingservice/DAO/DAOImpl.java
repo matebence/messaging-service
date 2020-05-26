@@ -62,7 +62,7 @@ public class DAOImpl<T> implements DAO<T> {
     }
 
     @Override
-    public List<T> getAll(int pageNumber, int pageSize, Class<T> c) {
+    public List<T> getAll(Class<T> c, int pageNumber, int pageSize) {
         try {
             Pageable pageable = PageRequest.of(pageNumber, pageSize);
             Query query = new Query().with(pageable);
@@ -73,13 +73,11 @@ public class DAOImpl<T> implements DAO<T> {
     }
 
     @Override
-    public Map<String, Object> searchBy(Class c, HashMap<String, HashMap<String, String>> criterias, int pageNumber) {
-        final int PAGE_SIZE = 10;
-        try {
-            HashMap<String, Object> map = new HashMap<>();
-            Query query = new Query();
-            PageImpl page = null;
+    public Map<String, Object> searchBy(Class c, HashMap<String, HashMap<String, String>> criterias) {
+        HashMap<String, Object> map = new HashMap<>();
+        Query query = new Query(); PageImpl page = null;
 
+        try {
             if (criterias.get(Keys.SEARCH) != null) {
                 for (Object o : criterias.get(Keys.SEARCH).entrySet()) {
                     Map.Entry pair = (Map.Entry) o;
@@ -97,7 +95,7 @@ public class DAOImpl<T> implements DAO<T> {
                 }
             }
             if (criterias.get(Keys.PAGINATION) != null) {
-                Pageable pageable = PageRequest.of(pageNumber, PAGE_SIZE);
+                Pageable pageable = PageRequest.of(Integer.parseInt(criterias.get(Keys.PAGINATION).get(Keys.PAGE_NUMBER)), Integer.parseInt(criterias.get(Keys.PAGINATION).get(Keys.PAGE_SIZE)));
                 long total = this.mongoTemplate.count(query, c);
                 query.with(pageable);
                 page = new PageImpl<T>(this.mongoTemplate.find(query, c), pageable, total);

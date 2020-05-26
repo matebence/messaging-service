@@ -16,7 +16,7 @@ public interface DAO<T> {
 
     T get(Class<T> c, String column, String id);
 
-    List<T> getAll(int pageNumber, int pageSize, Class<T> c);
+    List<T> getAll(Class<T> c, int pageNumber, int pageSize);
 
-    Map<String, Object> searchBy(Class c, HashMap<String, HashMap<String, String>> criterias, int pageNumber);
+    Map<String, Object> searchBy(Class c, HashMap<String, HashMap<String, String>> criterias);
 }

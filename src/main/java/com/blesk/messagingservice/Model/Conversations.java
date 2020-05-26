@@ -19,11 +19,21 @@ public class Conversations {
     @Version
     private Long version;
 
+    private Boolean isDeleted = false;
+
     @Valid
     @NotNull(message = Messages.CONVERSATION_PARTICIPANTS_NOT_NULL)
     private Set<Users> participants = new HashSet<>();
 
     public Conversations() {
+    }
+
+    public Boolean getDeleted() {
+        return this.isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        isDeleted = deleted;
     }
 
     public String getConversationId() {

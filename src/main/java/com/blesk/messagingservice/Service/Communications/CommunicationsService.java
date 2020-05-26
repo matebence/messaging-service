@@ -18,5 +18,5 @@ public interface CommunicationsService {
 
     List<Communications> getAllCommunications(int pageNumber, int pageSize);
 
-    Map<String, Object> searchForCommunication(HashMap<String, HashMap<String, String>> criteria);
+    Map<String, Object> searchForCommunication(HashMap<String, HashMap<String, String>> criterias);
 }

@@ -3,7 +3,6 @@ package com.blesk.messagingservice.Service.Status;
 import com.blesk.messagingservice.DAO.Status.StatusDAOImpl;
 import com.blesk.messagingservice.Model.Status;
 import com.blesk.messagingservice.Utilitie.Tools;
-import com.blesk.messagingservice.Value.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
@@ -53,12 +52,12 @@ public class StatusServiceImpl implements StatusService {
     @Override
     @Transactional
     public List<Status> getAllStatuses(int pageNumber, int pageSize) {
-        return this.statusDAO.getAll(pageNumber, pageSize, Status.class);
+        return this.statusDAO.getAll(Status.class, pageNumber, pageSize);
     }
 
     @Override
     @Transactional
-    public Map<String, Object> searchForStatus(HashMap<String, HashMap<String, String>> criteria) {
-        return this.statusDAO.searchBy(Status.class, criteria, Integer.parseInt(criteria.get(Keys.PAGINATION).get(Keys.PAGE_NUMBER)));
+    public Map<String, Object> searchForStatus(HashMap<String, HashMap<String, String>> criterias) {
+        return this.statusDAO.searchBy(Status.class, criterias);
     }
 }

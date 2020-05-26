@@ -4,7 +4,6 @@ import com.blesk.messagingservice.DAO.Conversations.ConversationsDAOImpl;
 import com.blesk.messagingservice.DAO.Communications.CommunicationsDAOImpl;
 import com.blesk.messagingservice.Model.Communications;
 import com.blesk.messagingservice.Utilitie.Tools;
-import com.blesk.messagingservice.Value.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
@@ -61,12 +60,12 @@ public class CommunicationsServiceImpl implements CommunicationsService {
     @Override
     @Transactional
     public List<Communications> getAllCommunications(int pageNumber, int pageSize) {
-        return this.communicationsDAO.getAll(pageNumber, pageSize, Communications.class);
+        return this.communicationsDAO.getAll(Communications.class, pageNumber, pageSize);
     }
 
     @Override
     @Transactional
-    public Map<String, Object> searchForCommunication(HashMap<String, HashMap<String, String>> criteria) {
-        return this.conversationsDAO.searchBy(Communications.class, criteria, Integer.parseInt(criteria.get(Keys.PAGINATION).get(Keys.PAGE_NUMBER)));
+    public Map<String, Object> searchForCommunication(HashMap<String, HashMap<String, String>> criterias) {
+        return this.conversationsDAO.searchBy(Communications.class, criterias);
     }
 }

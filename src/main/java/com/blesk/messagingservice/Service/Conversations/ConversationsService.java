@@ -12,13 +12,13 @@ public interface ConversationsService {
 
     Boolean updateConversation(Conversations conversation, Conversations conversations);
 
-    Boolean deleteConversation(Conversations conversations);
+    Boolean deleteConversation(Conversations conversations, boolean su);
 
-    Conversations getConversation(String id);
+    Conversations getConversation(String id, boolean su);
 
-    List<Conversations> getAllConversations(int pageNumber, int pageSize);
+    List<Conversations> getAllConversations(int pageNumber, int pageSize, boolean su);
 
     List<Conversations> getAllConversationsByAccontId(Long accountId);
 
-    Map<String, Object> searchForConversation(HashMap<String, HashMap<String, String>> criteria);
+    Map<String, Object> searchForConversation(HashMap<String, HashMap<String, String>> criterias, boolean su);
 }

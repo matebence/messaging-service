@@ -58,9 +58,9 @@ public class ConversationsResource {
 //        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
 //        if (!jwtMapper.getGrantedPrivileges().contains("DELETE_CONVERSATIONS")) throw new MessagingServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
-        Conversations conversation = this.conversationsService.getConversation(conversationId);
+        Conversations conversation = this.conversationsService.getConversation(conversationId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
         if (conversation == null) throw new MessagingServiceException(Messages.GET_CONVERSATION, HttpStatus.NOT_FOUND);
-        if (!this.conversationsService.deleteConversation(conversation)) throw new MessagingServiceException(Messages.DELETE_CONVERSATION, HttpStatus.BAD_REQUEST);
+        if (!this.conversationsService.deleteConversation(conversation, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")))) throw new MessagingServiceException(Messages.DELETE_CONVERSATION, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
@@ -71,7 +71,7 @@ public class ConversationsResource {
 //        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
 //        if (!jwtMapper.getGrantedPrivileges().contains("UPDATE_CONVERSATIONS")) throw new MessagingServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
-        Conversations conversation = this.conversationsService.getConversation(conversationId);
+        Conversations conversation = this.conversationsService.getConversation(conversationId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
         if (conversation == null) throw new MessagingServiceException(Messages.GET_CONVERSATION, HttpStatus.BAD_REQUEST);
 
         if (!this.conversationsService.updateConversation(conversation, conversations)) throw new MessagingServiceException(Messages.UPDATE_CONVERSATION, HttpStatus.BAD_REQUEST);
@@ -85,7 +85,7 @@ public class ConversationsResource {
 //        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
 //        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_CONVERSATIONS")) throw new MessagingServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
-        Conversations conversation = this.conversationsService.getConversation(conversationId);
+        Conversations conversation = this.conversationsService.getConversation(conversationId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
         if (conversation == null) throw new MessagingServiceException(Messages.GET_CONVERSATION, HttpStatus.BAD_REQUEST);
 
         EntityModel<Conversations> entityModel = new EntityModel<Conversations>(conversation);
@@ -101,7 +101,7 @@ public class ConversationsResource {
 //        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
 //        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_CONVERSATIONS")) throw new MessagingServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
-        List<Conversations> conversations = this.conversationsService.getAllConversations(pageNumber, pageSize);
+        List<Conversations> conversations = this.conversationsService.getAllConversations(pageNumber, pageSize, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
         if (conversations == null || conversations.isEmpty()) throw new MessagingServiceException(Messages.GET_ALL_CONVERSATIONS, HttpStatus.BAD_REQUEST);
 
         CollectionModel<List<Conversations>> collectionModel = new CollectionModel(conversations);
@@ -119,7 +119,7 @@ public class ConversationsResource {
 //        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_CONVERSATIONS")) throw new MessagingServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
         if (search.get(Keys.PAGINATION) == null) throw new MessagingServiceException(Messages.PAGINATION_ERROR, HttpStatus.BAD_REQUEST);
 
-        Map<String, Object> conversation = this.conversationsService.searchForConversation(search);
+        Map<String, Object> conversation = this.conversationsService.searchForConversation(search, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
         if (conversation == null || conversation.isEmpty()) throw new MessagingServiceException(Messages.SEARCH_ERROR, HttpStatus.BAD_REQUEST);
 
         CollectionModel<List<Conversations>> collectionModel = new CollectionModel((List<Conversations>) conversation.get("results"));
