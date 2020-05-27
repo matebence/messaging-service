@@ -1,7 +1,7 @@
 package com.blesk.messagingservice.Controller.Resources;
 
 import com.blesk.messagingservice.DTO.JwtMapper;
-import com.blesk.messagingservice.Exception.MessagingServiceException;
+import com.blesk.messagingservice.Exception.MessageServiceException;
 import com.blesk.messagingservice.Model.Status;
 import com.blesk.messagingservice.Service.Status.StatusServiceImpl;
 import com.blesk.messagingservice.Value.Keys;
@@ -45,10 +45,10 @@ public class StatusResource {
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<Status> createStatus(@Valid @RequestBody Status statuses, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("CREATE_STATUS")) throw new MessagingServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
+        if (!jwtMapper.getGrantedPrivileges().contains("CREATE_STATUS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         Status status = this.statusService.createStatus(statuses);
-        if (status == null) throw new MessagingServiceException(Messages.CREATE_STATUS, HttpStatus.BAD_REQUEST);
+        if (status == null) throw new MessageServiceException(Messages.CREATE_STATUS, HttpStatus.BAD_REQUEST);
 
         EntityModel<Status> entityModel = EntityModel.of(status);
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveStatus(status.getStatusId(), httpServletRequest, httpServletResponse)).withRel("status"));
@@ -60,11 +60,11 @@ public class StatusResource {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> deleteStatus(@PathVariable String statusId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("DELETE_STATUS")) throw new MessagingServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
+        if (!jwtMapper.getGrantedPrivileges().contains("DELETE_STATUS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         Status status = this.statusService.getStatus(statusId);
-        if (status == null) throw new MessagingServiceException(Messages.GET_STATUS, HttpStatus.NOT_FOUND);
-        if (!this.statusService.deleteStatus(status)) throw new MessagingServiceException(Messages.DELETE_STATUS, HttpStatus.BAD_REQUEST);
+        if (status == null) throw new MessageServiceException(Messages.GET_STATUS, HttpStatus.NOT_FOUND);
+        if (!this.statusService.deleteStatus(status)) throw new MessageServiceException(Messages.DELETE_STATUS, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
@@ -73,12 +73,12 @@ public class StatusResource {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> updateStatus(@Valid @RequestBody Status statuses, @PathVariable String statusId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("UPDATE_STATUS")) throw new MessagingServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
+        if (!jwtMapper.getGrantedPrivileges().contains("UPDATE_STATUS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         Status status = this.statusService.getStatus(statusId);
-        if (status == null) throw new MessagingServiceException(Messages.GET_STATUS, HttpStatus.BAD_REQUEST);
+        if (status == null) throw new MessageServiceException(Messages.GET_STATUS, HttpStatus.BAD_REQUEST);
 
-        if (!this.statusService.updateStatus(status, statuses)) throw new MessagingServiceException(Messages.UPDATE_STATUS, HttpStatus.BAD_REQUEST);
+        if (!this.statusService.updateStatus(status, statuses)) throw new MessageServiceException(Messages.UPDATE_STATUS, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
@@ -87,10 +87,10 @@ public class StatusResource {
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Status> retrieveStatus(@PathVariable String statusId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_STATUS")) throw new MessagingServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
+        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_STATUS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         Status status = this.statusService.getStatus(statusId);
-        if (status == null) throw new MessagingServiceException(Messages.GET_STATUS, HttpStatus.BAD_REQUEST);
+        if (status == null) throw new MessageServiceException(Messages.GET_STATUS, HttpStatus.BAD_REQUEST);
 
         EntityModel<Status> entityModel = EntityModel.of(status);
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveStatus(statusId, httpServletRequest, httpServletResponse)).withSelfRel());
@@ -103,10 +103,10 @@ public class StatusResource {
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public CollectionModel<Status> retrieveAllStatuses(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_STATUSES")) throw new MessagingServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
+        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_STATUSES")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         List<Status> status = this.statusService.getAllStatuses(pageNumber, pageSize);
-        if (status == null || status.isEmpty()) throw new MessagingServiceException(Messages.GET_ALL_STATUSES, HttpStatus.BAD_REQUEST);
+        if (status == null || status.isEmpty()) throw new MessageServiceException(Messages.GET_ALL_STATUSES, HttpStatus.BAD_REQUEST);
 
         CollectionModel<Status> collectionModel = CollectionModel.of(status);
         collectionModel.add(linkTo(methodOn(this.getClass()).retrieveAllStatuses(pageNumber, pageSize, httpServletRequest, httpServletResponse)).withSelfRel());
@@ -120,11 +120,11 @@ public class StatusResource {
     public CollectionModel<Status> searchForStatus(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
 
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_STATUSES")) throw new MessagingServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-        if (search.get(Keys.PAGINATION) == null) throw new MessagingServiceException(Messages.PAGINATION_ERROR, HttpStatus.BAD_REQUEST);
+        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_STATUSES")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
+        if (search.get(Keys.PAGINATION) == null) throw new MessageServiceException(Messages.PAGINATION_ERROR, HttpStatus.BAD_REQUEST);
 
         Map<String, Object> status = this.statusService.searchForStatus(search);
-        if (status == null || status.isEmpty()) throw new MessagingServiceException(Messages.SEARCH_ERROR, HttpStatus.BAD_REQUEST);
+        if (status == null || status.isEmpty()) throw new MessageServiceException(Messages.SEARCH_ERROR, HttpStatus.BAD_REQUEST);
 
         CollectionModel<Status> collectionModel = CollectionModel.of((List<Status>) status.get("results"));
         collectionModel.add(linkTo(methodOn(this.getClass()).searchForStatus(search, httpServletRequest, httpServletResponse)).withSelfRel());

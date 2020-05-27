@@ -1,6 +1,6 @@
 package com.blesk.messagingservice.Config;
 
-import com.blesk.messagingservice.Exception.MessagingServiceException;
+import com.blesk.messagingservice.Exception.MessageServiceException;
 import com.blesk.messagingservice.Value.Messages;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -25,7 +25,7 @@ public class Firebase {
             FirebaseOptions options = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())).build();
             if (FirebaseApp.getApps().isEmpty()) FirebaseApp.initializeApp(options);
         } catch (IOException e) {
-            throw new MessagingServiceException(Messages.FIREBASE_EXCEPTION, HttpStatus.SERVICE_UNAVAILABLE);
+            throw new MessageServiceException(Messages.FIREBASE_EXCEPTION, HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 }

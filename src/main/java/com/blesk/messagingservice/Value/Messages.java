@@ -14,8 +14,6 @@ public class Messages {
     public static final String AUTH_EXCEPTION = "Ľutujeme, ale stránka nie je k dispozícií";
     public static final String AUTH_REQUIRED_EXCEPTION = "Prístup odmietnutý";
     public static final String SQL_EXCEPTION = "Operácia sa neuskutočnila";
-    public static final String SERVER_EXCEPTION = "Ľutujeme, ale server je momentálne nedostupný";
-    public static final String STRIPE_EXCEPTION = "Ľutujeme, ale tranzakcia bola neúpešná";
     public static final String FIREBASE_EXCEPTION = "Inicializácia Firebase bola neúspešná";
     public static final String EXCEPTION = "Nastala neočakávaná chyba";
 

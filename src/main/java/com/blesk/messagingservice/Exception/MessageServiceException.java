@@ -2,11 +2,11 @@ package com.blesk.messagingservice.Exception;
 
 import org.springframework.http.HttpStatus;
 
-public class MessagingServiceException extends RuntimeException {
+public class MessageServiceException extends RuntimeException {
 
     private HttpStatus httpStatus;
 
-    public MessagingServiceException(String message, HttpStatus httpStatus) {
+    public MessageServiceException(String message, HttpStatus httpStatus) {
         super(message);
         this.httpStatus = httpStatus;
     }
