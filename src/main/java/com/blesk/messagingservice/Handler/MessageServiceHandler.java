@@ -3,6 +3,7 @@ package com.blesk.messagingservice.Handler;
 import com.blesk.messagingservice.DTO.Response;
 import com.blesk.messagingservice.Exception.MessageServiceException;
 import com.blesk.messagingservice.Value.Messages;
+import com.mongodb.MongoException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
@@ -76,9 +76,9 @@ public class MessageServiceHandler {
         return new ResponseEntity<>(errorObj, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(SQLException.class)
+    @ExceptionHandler(MongoException.class)
     public final ResponseEntity<Response> handleDatabaseExceptions() {
-        Response errorObj = new Response(new Timestamp(System.currentTimeMillis()).toString(), Messages.SQL_EXCEPTION, true);
+        Response errorObj = new Response(new Timestamp(System.currentTimeMillis()).toString(), Messages.MONGO_EXCEPTION, true);
         return new ResponseEntity<>(errorObj, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
