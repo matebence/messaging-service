@@ -52,10 +52,13 @@ public class Conversations {
         this.participants = participants;
     }
 
-    private static class Users{
+    public static class Users{
 
         @NotNull(message = Messages.CONVERSATION_USERS_ACCOUNT_ID_NOT_NULL)
         private Long accountId;
+
+        @NotNull(message = Messages.CONVERSATION_STATUS_ID_NOT_NULL)
+        private String statusId;
 
         @NotNull(message = Messages.CONVERSATION_USERS_USER_NAME_NOT_NULL)
         private String userName;
@@ -69,6 +72,14 @@ public class Conversations {
 
         public void setAccountId(Long accountId) {
             this.accountId = accountId;
+        }
+
+        public String getStatusId() {
+            return this.statusId;
+        }
+
+        public void setStatusId(String statusId) {
+            this.statusId = statusId;
         }
 
         public String getUserName() {

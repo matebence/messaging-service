@@ -23,7 +23,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/", produces = "application/json")
+@RequestMapping(value = "/api", produces = "application/json")
 public class StatusResource {
 
     private final static int DEFAULT_PAGE_SIZE = 10;
@@ -46,7 +46,7 @@ public class StatusResource {
         Status status = this.statusService.createStatus(statuses);
         if (status == null) throw new MessagingServiceException(Messages.CREATE_STATUS, HttpStatus.BAD_REQUEST);
 
-        EntityModel<Status> entityModel = new EntityModel<Status>(status);
+        EntityModel<Status> entityModel = EntityModel.of(status);
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveStatus(status.getStatusId(), httpServletRequest, httpServletResponse)).withRel("status"));
         return entityModel;
     }
@@ -88,7 +88,7 @@ public class StatusResource {
         Status status = this.statusService.getStatus(statusId);
         if (status == null) throw new MessagingServiceException(Messages.GET_STATUS, HttpStatus.BAD_REQUEST);
 
-        EntityModel<Status> entityModel = new EntityModel<Status>(status);
+        EntityModel<Status> entityModel = EntityModel.of(status);
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveStatus(statusId, httpServletRequest, httpServletResponse)).withSelfRel());
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveAllStatuses(StatusResource.DEFAULT_NUMBER, StatusResource.DEFAULT_PAGE_SIZE, httpServletRequest, httpServletResponse)).withRel("all-statuses"));
         return entityModel;
@@ -97,14 +97,14 @@ public class StatusResource {
 //    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN')")
     @GetMapping("/status/page/{pageNumber}/limit/{pageSize}")
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
-    public CollectionModel<List<Status>> retrieveAllStatuses(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public CollectionModel<Status> retrieveAllStatuses(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 //        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
 //        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_STATUSES")) throw new MessagingServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         List<Status> status = this.statusService.getAllStatuses(pageNumber, pageSize);
         if (status == null || status.isEmpty()) throw new MessagingServiceException(Messages.GET_ALL_STATUSES, HttpStatus.BAD_REQUEST);
 
-        CollectionModel<List<Status>> collectionModel = new CollectionModel(status);
+        CollectionModel<Status> collectionModel = CollectionModel.of(status);
         collectionModel.add(linkTo(methodOn(this.getClass()).retrieveAllStatuses(pageNumber, pageSize, httpServletRequest, httpServletResponse)).withSelfRel());
         collectionModel.add(linkTo(methodOn(this.getClass()).retrieveAllStatuses(++pageNumber, pageSize, httpServletRequest, httpServletResponse)).withRel("next-range"));
         return collectionModel;
@@ -113,7 +113,7 @@ public class StatusResource {
 //    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN')")
     @PostMapping("/status/search")
     @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<List<Status>> searchForStatus(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public CollectionModel<Status> searchForStatus(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 //        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
 
 //        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_STATUSES")) throw new MessagingServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
@@ -122,7 +122,7 @@ public class StatusResource {
         Map<String, Object> status = this.statusService.searchForStatus(search);
         if (status == null || status.isEmpty()) throw new MessagingServiceException(Messages.SEARCH_ERROR, HttpStatus.BAD_REQUEST);
 
-        CollectionModel<List<Status>> collectionModel = new CollectionModel((List<Status>) status.get("results"));
+        CollectionModel<Status> collectionModel = CollectionModel.of((List<Status>) status.get("results"));
         collectionModel.add(linkTo(methodOn(this.getClass()).searchForStatus(search, httpServletRequest, httpServletResponse)).withSelfRel());
 
         if ((boolean) status.get("hasPrev")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForStatus(search, httpServletRequest, httpServletResponse)).withRel("hasPrev"));

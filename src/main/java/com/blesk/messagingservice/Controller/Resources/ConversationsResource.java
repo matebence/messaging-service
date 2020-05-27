@@ -23,7 +23,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/", produces = "application/json")
+@RequestMapping(value = "/api", produces = "application/json")
 public class ConversationsResource {
 
     private final static int DEFAULT_PAGE_SIZE = 10;
@@ -46,7 +46,7 @@ public class ConversationsResource {
         Conversations conversation = this.conversationsService.createConversation(conversations);
         if (conversation == null) throw new MessagingServiceException(Messages.CREATE_CONVERSATION, HttpStatus.BAD_REQUEST);
 
-        EntityModel<Conversations> entityModel = new EntityModel<Conversations>(conversation);
+        EntityModel<Conversations> entityModel = EntityModel.of(conversation);
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveConversations(conversation.getConversationId(), httpServletRequest, httpServletResponse)).withRel("conversation"));
         return entityModel;
     }
@@ -88,7 +88,7 @@ public class ConversationsResource {
         Conversations conversation = this.conversationsService.getConversation(conversationId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
         if (conversation == null) throw new MessagingServiceException(Messages.GET_CONVERSATION, HttpStatus.BAD_REQUEST);
 
-        EntityModel<Conversations> entityModel = new EntityModel<Conversations>(conversation);
+        EntityModel<Conversations> entityModel = EntityModel.of(conversation);
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveConversations(conversationId, httpServletRequest, httpServletResponse)).withSelfRel());
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveAllConversations(ConversationsResource.DEFAULT_NUMBER, ConversationsResource.DEFAULT_PAGE_SIZE, httpServletRequest, httpServletResponse)).withRel("all-conversations"));
         return entityModel;
@@ -97,14 +97,14 @@ public class ConversationsResource {
 //    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @GetMapping("/conversations/page/{pageNumber}/limit/{pageSize}")
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
-    public CollectionModel<List<Conversations>> retrieveAllConversations(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public CollectionModel<Conversations> retrieveAllConversations(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 //        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
 //        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_CONVERSATIONS")) throw new MessagingServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         List<Conversations> conversations = this.conversationsService.getAllConversations(pageNumber, pageSize, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
         if (conversations == null || conversations.isEmpty()) throw new MessagingServiceException(Messages.GET_ALL_CONVERSATIONS, HttpStatus.BAD_REQUEST);
 
-        CollectionModel<List<Conversations>> collectionModel = new CollectionModel(conversations);
+        CollectionModel<Conversations> collectionModel = CollectionModel.of(conversations);
         collectionModel.add(linkTo(methodOn(this.getClass()).retrieveAllConversations(pageNumber, pageSize, httpServletRequest, httpServletResponse)).withSelfRel());
         collectionModel.add(linkTo(methodOn(this.getClass()).retrieveAllConversations(++pageNumber, pageSize, httpServletRequest, httpServletResponse)).withRel("next-range"));
         return collectionModel;
@@ -113,7 +113,7 @@ public class ConversationsResource {
 //    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @PostMapping("/conversations/search")
     @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<List<Conversations>> searchForConversations(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public CollectionModel<Conversations> searchForConversations(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 //        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
 
 //        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_CONVERSATIONS")) throw new MessagingServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
@@ -122,7 +122,7 @@ public class ConversationsResource {
         Map<String, Object> conversation = this.conversationsService.searchForConversation(search, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
         if (conversation == null || conversation.isEmpty()) throw new MessagingServiceException(Messages.SEARCH_ERROR, HttpStatus.BAD_REQUEST);
 
-        CollectionModel<List<Conversations>> collectionModel = new CollectionModel((List<Conversations>) conversation.get("results"));
+        CollectionModel<Conversations> collectionModel = CollectionModel.of((List<Conversations>) conversation.get("results"));
         collectionModel.add(linkTo(methodOn(this.getClass()).searchForConversations(search, httpServletRequest, httpServletResponse)).withSelfRel());
 
         if ((boolean) conversation.get("hasPrev")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForConversations(search, httpServletRequest, httpServletResponse)).withRel("hasPrev"));

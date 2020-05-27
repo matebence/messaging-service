@@ -1,8 +1,11 @@
 package com.blesk.messagingservice.Controller;
 
+import com.blesk.messagingservice.DTO.Notifications;
 import com.blesk.messagingservice.Model.Communications;
+import com.blesk.messagingservice.Model.Conversations;
 import com.blesk.messagingservice.Model.Status;
 import com.blesk.messagingservice.Service.Communications.CommunicationsServiceImpl;
+import com.blesk.messagingservice.Service.Notifications.NotificationsServiceImpl;
 import com.blesk.messagingservice.Service.Status.StatusServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -27,23 +30,42 @@ public class ConversationController {
 
     private CommunicationsServiceImpl communicationsService;
 
+    private NotificationsServiceImpl notificationsService;
+
     @Autowired
-    public ConversationController(SimpMessageSendingOperations simpMessageSendingOperations, StatusServiceImpl statusService, CommunicationsServiceImpl communicationsService){
+    public ConversationController(SimpMessageSendingOperations simpMessageSendingOperations, StatusServiceImpl statusService, CommunicationsServiceImpl communicationsService, NotificationsServiceImpl notificationsService) {
         this.simpMessageSendingOperations = simpMessageSendingOperations;
         this.statusService = statusService;
         this.communicationsService = communicationsService;
+        this.notificationsService = notificationsService;
     }
 
     @MessageMapping("/state")
     public void setConversationState(@Payload @Valid Status status, SimpMessageHeaderAccessor headerAccessor) {
+        if (headerAccessor.getSessionAttributes() == null) return;
         headerAccessor.getSessionAttributes().put("userName", status.getUserName());
-        if(this.statusService.createStatus(status) == null) return;
-        this.simpMessageSendingOperations.convertAndSend("/status", status);
+        Status state = this.statusService.createStatus(status);
+        if (state == null) return;
+        this.simpMessageSendingOperations.convertAndSend("/status", state);
     }
 
     @MessageMapping("/conversations/{conversationId}/sendMessage")
     public void sendCommunicationMessage(@DestinationVariable String conversationId, @Payload @Valid Communications communications) {
         if (this.communicationsService.createCommunication(communications) == null) return;
+        for (Conversations.Users users : communications.getConversations().getParticipants()) {
+            if (!communications.getSender().equals(users.getAccountId())) {
+                Status status = this.statusService.getStatus(users.getStatusId());
+
+                Notifications notifications = new Notifications();
+                notifications.setBody(communications.getContent());
+                notifications.setToken(status.getToken());
+
+                if (communications.getContent().length() > 5) notifications.setBody(communications.getContent().substring(0, 5).concat("..."));
+                notifications.setTitle(communications.getConversations().getParticipants().stream().filter(user -> !communications.getSender().equals(user.getAccountId())).map(userName -> userName.getUserName().concat(" ")).reduce("", String::concat));
+
+                this.notificationsService.sendPushNotificationToToken(notifications);
+            }
+        }
         this.simpMessageSendingOperations.convertAndSend(format("/conversations/%s", conversationId), communications);
     }
 }

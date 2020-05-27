@@ -25,6 +25,9 @@ public class Status {
     @Size(min = 5, max = 255, message = Messages.STATUS_USER_NAME_SIZE)
     private String userName;
 
+    @NotNull(message = Messages.STATUS_TOKEN_NOT_NULL)
+    private String token;
+
     @NotNull(message = Messages.STATUS_STATE_NOT_NULL)
     private State state;
 
@@ -45,6 +48,14 @@ public class Status {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getToken() {
+        return this.token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public State getState() {

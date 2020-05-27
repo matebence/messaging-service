@@ -48,7 +48,7 @@ public class ConversationsDAOImpl extends DAOImpl<Conversations> implements Conv
         try {
             Query query = new Query();
             query.addCriteria(Criteria.where(column).is(id).andOperator(Criteria.where("isDeleted").is(false)));
-            return mongoTemplate.findOne(query, Conversations.class);
+            return this.mongoTemplate.findOne(query, Conversations.class);
         } catch (Exception e) {
             return null;
         }

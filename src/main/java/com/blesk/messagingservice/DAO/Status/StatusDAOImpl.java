@@ -17,8 +17,9 @@ public class StatusDAOImpl extends DAOImpl<Status> implements StatusDAO {
             query.addCriteria(Criteria.where("userName").is(status.getUserName()));
             Update update = new Update();
             update.set("state", status.getState());
-            mongoTemplate.upsert(query, update, Status.class);
-            return status;
+            update.set("token", status.getToken());
+            this.mongoTemplate.upsert(query, update, Status.class);
+            return this.mongoTemplate.findOne(query, Status.class);
         } catch (Exception e) {
             return null;
         }

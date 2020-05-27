@@ -44,7 +44,7 @@ public class DAOImpl<T> implements DAO<T> {
     @Override
     public Boolean delete(T t) {
         try {
-            return mongoTemplate.remove(t).getDeletedCount() == 1;
+            return this.mongoTemplate.remove(t).getDeletedCount() == 1;
         } catch (Exception e) {
             return Boolean.FALSE;
         }
@@ -55,7 +55,7 @@ public class DAOImpl<T> implements DAO<T> {
         try {
             Query query = new Query();
             query.addCriteria(Criteria.where(column).is(id));
-            return mongoTemplate.findOne(query, c);
+            return this.mongoTemplate.findOne(query, c);
         } catch (Exception e) {
             return null;
         }

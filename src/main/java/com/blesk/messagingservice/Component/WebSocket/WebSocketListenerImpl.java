@@ -10,17 +10,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 @Component
-public class WebSocketListener {
+public class WebSocketListenerImpl implements WebSocketListener {
 
     private SimpMessageSendingOperations simpMessageSendingOperations;
     private StatusServiceImpl statusService;
 
     @Autowired
-    public WebSocketListener(SimpMessageSendingOperations simpMessageSendingOperations, StatusServiceImpl statusService) {
+    public WebSocketListenerImpl(SimpMessageSendingOperations simpMessageSendingOperations, StatusServiceImpl statusService) {
         this.simpMessageSendingOperations = simpMessageSendingOperations;
         this.statusService = statusService;
     }
 
+    @Override
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());

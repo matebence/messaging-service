@@ -16,15 +16,18 @@ public class Messages {
     public static final String SQL_EXCEPTION = "Operácia sa neuskutočnila";
     public static final String SERVER_EXCEPTION = "Ľutujeme, ale server je momentálne nedostupný";
     public static final String STRIPE_EXCEPTION = "Ľutujeme, ale tranzakcia bola neúpešná";
+    public static final String FIREBASE_EXCEPTION = "Inicializácia Firebase bola neúspešná";
     public static final String EXCEPTION = "Nastala neočakávaná chyba";
 
     public static final String CONVERSATION_PARTICIPANTS_NOT_NULL = "Nezadali ste účastníkov konverzácie";
 
     public static final String STATUS_USER_NAME_NOT_NULL = "Nezadali ste používateľské meno";
+    public static final String STATUS_TOKEN_NOT_NULL = "Chyba v inicializácií FCM tokenu";
     public static final String STATUS_USER_NAME_SIZE = "Používateľské meno je príliž krátke alebo dlhé";
     public static final String STATUS_STATE_NOT_NULL = "Nezadali ste status používateľa";
 
     public static final String CONVERSATION_USERS_ACCOUNT_ID_NOT_NULL = "Nezadali ste identifikačné číslo účastníkov konverzácie";
+    public static final String CONVERSATION_STATUS_ID_NOT_NULL = "Nezadali ste identifikačné číslo statusu používateľa";
     public static final String CONVERSATION_USERS_USER_NAME_NOT_NULL = "Nezadali ste používatelské meno účastníkov konverzácie";
 
     public static final String COMMUNICATION_USER_NAME_NOT_NULL = "Nezadali ste používateľské meno";

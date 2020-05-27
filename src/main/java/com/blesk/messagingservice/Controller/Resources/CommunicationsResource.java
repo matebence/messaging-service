@@ -23,7 +23,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/", produces = "application/json")
+@RequestMapping(value = "/api", produces = "application/json")
 public class CommunicationsResource {
 
     private final static int DEFAULT_PAGE_SIZE = 10;
@@ -46,7 +46,7 @@ public class CommunicationsResource {
         Communications communication = this.communicationsService.createCommunication(communications);
         if (communication == null) throw new MessagingServiceException(Messages.CREATE_COMMUNICATION, HttpStatus.BAD_REQUEST);
 
-        EntityModel<Communications> entityModel = new EntityModel<Communications>(communication);
+        EntityModel<Communications> entityModel = EntityModel.of(communication);
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveCommunications(communication.getCommunicationId(), httpServletRequest, httpServletResponse)).withRel("communication"));
         return entityModel;
     }
@@ -88,7 +88,7 @@ public class CommunicationsResource {
         Communications communication = this.communicationsService.getCommunication(communicationId);
         if (communication == null) throw new MessagingServiceException(Messages.GET_COMMUNICATION, HttpStatus.BAD_REQUEST);
 
-        EntityModel<Communications> entityModel = new EntityModel<Communications>(communication);
+        EntityModel<Communications> entityModel = EntityModel.of(communication);
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveCommunications(communicationId, httpServletRequest, httpServletResponse)).withSelfRel());
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveAllCommunications(CommunicationsResource.DEFAULT_NUMBER, CommunicationsResource.DEFAULT_PAGE_SIZE, httpServletRequest, httpServletResponse)).withRel("all-communications"));
         return entityModel;
@@ -97,14 +97,14 @@ public class CommunicationsResource {
 //    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @GetMapping("/communications/page/{pageNumber}/limit/{pageSize}")
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
-    public CollectionModel<List<Communications>> retrieveAllCommunications(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public CollectionModel<Communications> retrieveAllCommunications(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 //        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
 //        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_COMMUNICATIONS")) throw new MessagingServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         List<Communications> communications = this.communicationsService.getAllCommunications(pageNumber, pageSize);
         if (communications == null || communications.isEmpty()) throw new MessagingServiceException(Messages.GET_ALL_COMMUNICATIONS, HttpStatus.BAD_REQUEST);
 
-        CollectionModel<List<Communications>> collectionModel = new CollectionModel(communications);
+        CollectionModel<Communications> collectionModel = CollectionModel.of(communications);
         collectionModel.add(linkTo(methodOn(this.getClass()).retrieveAllCommunications(pageNumber, pageSize, httpServletRequest, httpServletResponse)).withSelfRel());
         collectionModel.add(linkTo(methodOn(this.getClass()).retrieveAllCommunications(++pageNumber, pageSize, httpServletRequest, httpServletResponse)).withRel("next-range"));
         return collectionModel;
@@ -113,7 +113,7 @@ public class CommunicationsResource {
 //    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @PostMapping("/communications/search")
     @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<List<Communications>> searchForCommunications(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public CollectionModel<Communications> searchForCommunications(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 //        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
 
 //        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_COMMUNICATIONS")) throw new MessagingServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
@@ -122,7 +122,7 @@ public class CommunicationsResource {
         Map<String, Object> communication = this.communicationsService.searchForCommunication(search);
         if (communication == null || communication.isEmpty()) throw new MessagingServiceException(Messages.SEARCH_ERROR, HttpStatus.BAD_REQUEST);
 
-        CollectionModel<List<Communications>> collectionModel = new CollectionModel((List<Communications>) communication.get("results"));
+        CollectionModel<Communications> collectionModel = CollectionModel.of((List<Communications>) communication.get("results"));
         collectionModel.add(linkTo(methodOn(this.getClass()).searchForCommunications(search, httpServletRequest, httpServletResponse)).withSelfRel());
 
         if ((boolean) communication.get("hasPrev")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForCommunications(search, httpServletRequest, httpServletResponse)).withRel("hasPrev"));
