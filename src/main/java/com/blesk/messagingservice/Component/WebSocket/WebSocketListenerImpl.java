@@ -33,8 +33,9 @@ public class WebSocketListenerImpl implements WebSocketListener {
         status.setState(Status.State.OFFLINE);
         status.setToken(null);
         status.setUserName(userName);
+        Status state = this.statusService.createStatus(status);
 
-        if (this.statusService.createStatus(status) == null) return;
-        this.simpMessageSendingOperations.convertAndSend("/status", status);
+        if (state == null) return;
+        this.simpMessageSendingOperations.convertAndSend("/status", state);
     }
 }
