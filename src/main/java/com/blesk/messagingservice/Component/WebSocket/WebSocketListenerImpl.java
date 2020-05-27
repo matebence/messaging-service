@@ -1,4 +1,4 @@
-package com.blesk.messagingservice.Component;
+package com.blesk.messagingservice.Component.WebSocket;
 
 import com.blesk.messagingservice.Model.Status;
 import com.blesk.messagingservice.Service.Status.StatusServiceImpl;
@@ -24,11 +24,13 @@ public class WebSocketListener {
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        if (headerAccessor.getSessionAttributes() == null) return;
         String userName = (String) headerAccessor.getSessionAttributes().get("userName");
 
         if (userName == null) return;
         Status status = new Status();
         status.setState(Status.State.OFFLINE);
+        status.setToken(null);
         status.setUserName(userName);
 
         if (this.statusService.createStatus(status) == null) return;
