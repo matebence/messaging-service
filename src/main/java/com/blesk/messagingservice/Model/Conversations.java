@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
-@Document
+@Document(collation = "Conversations")
 public class Conversations {
 
     @Id

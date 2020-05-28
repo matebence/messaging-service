@@ -1,5 +1,6 @@
 package com.blesk.messagingservice.Model;
 
+import com.blesk.messagingservice.Validator.Contains;
 import com.blesk.messagingservice.Value.Messages;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
@@ -8,10 +9,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@Document
+@Document(collation = "Status")
 public class Status {
 
-    public enum State{
+    public enum State {
         ONLINE, OFFLINE
     }
 
@@ -28,8 +29,9 @@ public class Status {
     @NotNull(message = Messages.STATUS_TOKEN_NOT_NULL)
     private String token;
 
+    @Contains(enumClass = State.class, message = Messages.STATUS_STATE_CONTAINS)
     @NotNull(message = Messages.STATUS_STATE_NOT_NULL)
-    private State state;
+    private String state;
 
     public Status() {
     }
@@ -58,11 +60,11 @@ public class Status {
         this.token = token;
     }
 
-    public State getState() {
+    public String getState() {
         return this.state;
     }
 
-    public void setState(State state) {
+    public void setState(String state) {
         this.state = state;
     }
 }

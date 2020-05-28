@@ -4,7 +4,7 @@ public class Messages {
 
     public static final String SEARCH_ERROR = "Kritériám nevyhoveli žiadné záznamy";
     public static final String PAGINATION_ERROR = "Požiadavku sa nepodarilo spracovať, chyba stránkovania";
-
+    public static final String CONTAINS_VALIDATOR_DEFAULT = "Tento údaj neevidujeme v databáze";
 
 
     public static final String TYPE_MISMATCH_EXCEPTION = "Nesprávný formát URL adresi";
@@ -23,6 +23,7 @@ public class Messages {
     public static final String STATUS_TOKEN_NOT_NULL = "Chyba v inicializácií FCM tokenu";
     public static final String STATUS_USER_NAME_SIZE = "Používateľské meno je príliž krátke alebo dlhé";
     public static final String STATUS_STATE_NOT_NULL = "Nezadali ste status používateľa";
+    public static final String STATUS_STATE_CONTAINS = "Typ statusu neexistuje";
 
     public static final String CONVERSATION_USERS_ACCOUNT_ID_NOT_NULL = "Nezadali ste identifikačné číslo účastníkov konverzácie";
     public static final String CONVERSATION_STATUS_ID_NOT_NULL = "Nezadali ste identifikačné číslo statusu používateľa";
