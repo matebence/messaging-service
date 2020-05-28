@@ -32,6 +32,7 @@ public class ConversationsServiceImpl implements ConversationsService {
     @Transactional
     public Boolean updateConversation(Conversations conversation, Conversations conversations) {
         Update update = new Update();
+        update.set("isDeleted", Tools.getNotNull(conversations.getDeleted(), conversation.getDeleted()));
         update.set("participants", Tools.getNotNull(conversations.getParticipants(), conversation.getParticipants()));
         return this.conversationsDAO.update(Conversations.class, "conversationId", conversation.getConversationId(), update);
     }

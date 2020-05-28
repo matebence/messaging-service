@@ -33,6 +33,7 @@ public class StatusServiceImpl implements StatusService {
     public Boolean updateStatus(Status status, Status statuses) {
         Update update = new Update();
         update.set("userName", Tools.getNotNull(statuses.getUserName(), status.getUserName()));
+        update.set("token", Tools.getNotNull(statuses.getToken(), status.getToken()));
         update.set("state", Tools.getNotNull(statuses.getState(), status.getState()));
         return this.statusDAO.update(Status.class, "statusId", status.getStatusId(), update);
     }
