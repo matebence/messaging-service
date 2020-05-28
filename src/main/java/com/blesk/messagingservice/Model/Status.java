@@ -4,12 +4,13 @@ import com.blesk.messagingservice.Validator.Contains;
 import com.blesk.messagingservice.Value.Messages;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@Document(collation = "Status")
+@Document(collection = "status")
 public class Status {
 
     public enum State {
@@ -22,10 +23,12 @@ public class Status {
     @Version
     private Long version;
 
+    @Indexed(unique = true)
     @NotNull(message = Messages.STATUS_USER_NAME_NOT_NULL)
     @Size(min = 5, max = 255, message = Messages.STATUS_USER_NAME_SIZE)
     private String userName;
 
+    @Indexed(unique = true)
     @NotNull(message = Messages.STATUS_TOKEN_NOT_NULL)
     private String token;
 

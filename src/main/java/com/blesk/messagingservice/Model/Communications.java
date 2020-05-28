@@ -4,14 +4,16 @@ import java.util.Date;
 
 import com.blesk.messagingservice.Value.Messages;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Reference;
 import org.springframework.data.annotation.Version;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
-@Document(collation = "Communications")
+@Document(collection = "communications")
 public class Communications {
 
     @Id
@@ -20,6 +22,7 @@ public class Communications {
     @Version
     private Long version;
 
+    @Indexed(unique = true)
     @NotNull(message = Messages.COMMUNICATION_USER_NAME_NOT_NULL)
     @Size(min = 5, max = 255, message = Messages.COMMUNICATION_USER_NAME_SIZE)
     private String userName;
@@ -32,6 +35,7 @@ public class Communications {
     @Size(min = 3, max = 255, message = Messages.COMMUNICATION_CONTENT_SIZE)
     private String content;
 
+    @Reference
     @NotNull(message = Messages.COMMUNICATION_CONVERSATIONS_NOT_NULL)
     private Conversations conversations;
 
