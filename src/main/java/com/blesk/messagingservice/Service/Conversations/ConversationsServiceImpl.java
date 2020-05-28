@@ -2,7 +2,6 @@ package com.blesk.messagingservice.Service.Conversations;
 
 import com.blesk.messagingservice.DAO.Conversations.ConversationsDAOImpl;
 import com.blesk.messagingservice.Model.Conversations;
-import com.blesk.messagingservice.Utilitie.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
@@ -32,8 +31,8 @@ public class ConversationsServiceImpl implements ConversationsService {
     @Transactional
     public Boolean updateConversation(Conversations conversation, Conversations conversations) {
         Update update = new Update();
-        update.set("isDeleted", Tools.getNotNull(conversations.getDeleted(), conversation.getDeleted()));
-        update.set("participants", Tools.getNotNull(conversations.getParticipants(), conversation.getParticipants()));
+        update.set("isDeleted", conversations.getDeleted());
+        update.set("participants", conversations.getParticipants());
         return this.conversationsDAO.update(Conversations.class, "conversationId", conversation.getConversationId(), update);
     }
 

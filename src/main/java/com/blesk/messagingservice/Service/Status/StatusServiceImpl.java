@@ -2,7 +2,6 @@ package com.blesk.messagingservice.Service.Status;
 
 import com.blesk.messagingservice.DAO.Status.StatusDAOImpl;
 import com.blesk.messagingservice.Model.Status;
-import com.blesk.messagingservice.Utilitie.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
@@ -32,9 +31,9 @@ public class StatusServiceImpl implements StatusService {
     @Transactional
     public Boolean updateStatus(Status status, Status statuses) {
         Update update = new Update();
-        update.set("userName", Tools.getNotNull(statuses.getUserName(), status.getUserName()));
-        update.set("token", Tools.getNotNull(statuses.getToken(), status.getToken()));
-        update.set("state", Tools.getNotNull(statuses.getState(), status.getState()));
+        update.set("userName", statuses.getUserName());
+        update.set("token", statuses.getToken());
+        update.set("state", statuses.getState());
         return this.statusDAO.update(Status.class, "statusId", status.getStatusId(), update);
     }
 

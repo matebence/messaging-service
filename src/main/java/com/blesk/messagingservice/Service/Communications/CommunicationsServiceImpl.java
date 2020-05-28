@@ -3,7 +3,6 @@ package com.blesk.messagingservice.Service.Communications;
 import com.blesk.messagingservice.DAO.Conversations.ConversationsDAOImpl;
 import com.blesk.messagingservice.DAO.Communications.CommunicationsDAOImpl;
 import com.blesk.messagingservice.Model.Communications;
-import com.blesk.messagingservice.Utilitie.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
@@ -37,11 +36,11 @@ public class CommunicationsServiceImpl implements CommunicationsService {
     @Transactional
     public Boolean updateCommunication(Communications communication, Communications communications) {
         Update update = new Update();
-        update.set("userName", Tools.getNotNull(communications.getUserName(), communication.getUserName()));
-        update.set("sender", Tools.getNotNull(communications.getSender(), communication.getSender()));
-        update.set("content", Tools.getNotNull(communications.getContent(), communication.getContent()));
-        update.set("conversations", Tools.getNotNull(communications.getConversations(), communication.getConversations()));
-        update.set("date", Tools.getNotNull(communications.getDate(), communication.getDate()));
+        update.set("userName", communications.getUserName());
+        update.set("sender", communications.getSender());
+        update.set("content", communications.getContent());
+        update.set("conversations", communications.getConversations());
+        update.set("date", communications.getDate());
         return this.communicationsDAO.update(Communications.class, "communicationId", communication.getCommunicationId(), update);
     }
 
