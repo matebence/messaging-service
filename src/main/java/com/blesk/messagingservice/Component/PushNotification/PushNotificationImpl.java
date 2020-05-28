@@ -21,7 +21,7 @@ public class PushNotificationImpl implements PushNotification {
 
     @Override
     public WebpushConfig getWebpushConfig(){
-        return WebpushConfig.builder().setNotification(WebpushNotification.builder().build()).build();
+        return WebpushConfig.builder().putHeader("ttl", "300").setNotification(WebpushNotification.builder().build()).build();
     }
 
     @Override
@@ -31,6 +31,6 @@ public class PushNotificationImpl implements PushNotification {
 
     @Override
     public Message.Builder getPreconfiguredMessageBuilder(Notifications notifications) {
-        return  Message.builder().setWebpushConfig(getWebpushConfig()).setNotification(Notification.builder().setBody(notifications.getBody()).setTitle(notifications.getTitle()).setImage(notifications.getImageUrl()).build());
+        return  Message.builder().putAllData(notifications.getData()).setWebpushConfig(getWebpushConfig()).setNotification(Notification.builder().setBody(notifications.getBody()).setTitle(notifications.getTitle()).setImage(notifications.getImageUrl()).build());
     }
 }

@@ -63,6 +63,10 @@ public class Conversations {
         @NotNull(message = Messages.CONVERSATION_USERS_USER_NAME_NOT_NULL)
         private String userName;
 
+        private String lastConversionId = null;
+
+        private String lastReadedConversionId = null;
+
         public Users() {
         }
 
@@ -88,6 +92,22 @@ public class Conversations {
 
         public void setUserName(String userName) {
             this.userName = userName;
+        }
+
+        public String getLastConversionId() {
+            return this.lastConversionId;
+        }
+
+        public void setLastConversionId(String lastConversionId) {
+            this.lastConversionId = lastConversionId;
+        }
+
+        public String getLastReadedConversionId() {
+            return this.lastReadedConversionId;
+        }
+
+        public void setLastReadedConversionId(String lastReadedConversionId) {
+            this.lastReadedConversionId = lastReadedConversionId;
         }
     }
 }

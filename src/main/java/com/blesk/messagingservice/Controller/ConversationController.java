@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import java.util.HashMap;
+
 import static java.lang.String.format;
 
 @RestController
@@ -51,7 +53,8 @@ public class ConversationController {
 
     @MessageMapping("/conversations/{conversationId}/sendMessage")
     public void sendCommunicationMessage(@DestinationVariable String conversationId, @Payload @Valid Communications communications) {
-        if (this.communicationsService.createCommunication(communications) == null) return;
+        Communications communication = this.communicationsService.createCommunication(communications);
+        if (communication == null) return;
         for (Conversations.Users users : communications.getConversations().getParticipants()) {
             if (!communications.getSender().equals(users.getAccountId())) {
                 Status status = this.statusService.getStatus(users.getStatusId());
@@ -59,6 +62,7 @@ public class ConversationController {
                 Notifications notifications = new Notifications();
                 notifications.setBody(communications.getContent());
                 notifications.setToken(status.getToken());
+                notifications.setData(new HashMap<String, String>(){{put("lastConversionId", communication.getCommunicationId());}});
 
                 if (communications.getContent().length() > 5) notifications.setBody(communications.getContent().substring(0, 5).concat("..."));
                 notifications.setTitle(communications.getConversations().getParticipants().stream().filter(user -> !communications.getSender().equals(user.getAccountId())).map(userName -> userName.getUserName().concat(" ")).reduce("", String::concat));
