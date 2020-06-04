@@ -103,7 +103,7 @@ public class StatusResource {
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public CollectionModel<Status> retrieveAllStatuses(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_STATUSES")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
+        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_STATUS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         List<Status> status = this.statusService.getAllStatuses(pageNumber, pageSize);
         if (status == null || status.isEmpty()) throw new MessageServiceException(Messages.GET_ALL_STATUSES, HttpStatus.BAD_REQUEST);
@@ -120,7 +120,7 @@ public class StatusResource {
     public CollectionModel<Status> searchForStatus(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
 
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_STATUSES")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
+        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_STATUS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
         if (search.get(Keys.PAGINATION) == null) throw new MessageServiceException(Messages.PAGINATION_ERROR, HttpStatus.BAD_REQUEST);
 
         Map<String, Object> status = this.statusService.searchForStatus(search);

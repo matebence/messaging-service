@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.sql.Timestamp;
 
 @Document(collection = "status")
 public class Status {
@@ -35,6 +36,14 @@ public class Status {
     @Contains(enumClass = State.class, message = Messages.STATUS_STATE_CONTAINS)
     @NotNull(message = Messages.STATUS_STATE_NOT_NULL)
     private String state;
+
+    private Boolean isDeleted = false;
+
+    private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+
+    private Timestamp updatedAt = null;
+
+    private Timestamp deletedAt = null;
 
     public Status() {
     }
@@ -69,5 +78,37 @@ public class Status {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public Boolean getDeleted() {
+        return this.isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.isDeleted = deleted;
+    }
+
+    public Timestamp getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return this.updatedAt;
+    }
+
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Timestamp getDeletedAt() {
+        return this.deletedAt;
+    }
+
+    public void setDeletedAt(Timestamp deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

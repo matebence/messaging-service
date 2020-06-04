@@ -1,5 +1,6 @@
 package com.blesk.messagingservice.DAO;
 
+import com.blesk.messagingservice.Model.Conversations;
 import com.blesk.messagingservice.Value.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -9,6 +10,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +37,7 @@ public class DAOImpl<T> implements DAO<T> {
         try {
             Query query = new Query();
             query.addCriteria(Criteria.where(column).is(id));
+            update.set("updatedAt", new Timestamp(System.currentTimeMillis()));
             return this.mongoTemplate.updateFirst(query, update, c).getModifiedCount() == 1;
         } catch (Exception e) {
             return Boolean.FALSE;
@@ -42,9 +45,14 @@ public class DAOImpl<T> implements DAO<T> {
     }
 
     @Override
-    public Boolean delete(T t) {
+    public Boolean delete(String column, String id) {
         try {
-            return this.mongoTemplate.remove(t).getDeletedCount() == 1;
+            Query query = new Query();
+            query.addCriteria(Criteria.where(column).is(id));
+            Update update = new Update();
+            update.set("isDeleted", true);
+            update.set("deletedAt", new Timestamp(System.currentTimeMillis()));
+            return this.mongoTemplate.updateFirst(query, update, Conversations.class).getModifiedCount() == 1;
         } catch (Exception e) {
             return Boolean.FALSE;
         }
@@ -54,7 +62,7 @@ public class DAOImpl<T> implements DAO<T> {
     public T get(Class<T> c, String column, String id) {
         try {
             Query query = new Query();
-            query.addCriteria(Criteria.where(column).is(id));
+            query.addCriteria(Criteria.where(column).is(id).andOperator(Criteria.where("isDeleted").is(false)));
             return this.mongoTemplate.findOne(query, c);
         } catch (Exception e) {
             return null;
@@ -66,6 +74,7 @@ public class DAOImpl<T> implements DAO<T> {
         try {
             Pageable pageable = PageRequest.of(pageNumber, pageSize);
             Query query = new Query().with(pageable);
+            query.addCriteria(Criteria.where("isDeleted").is(false));
             return new PageImpl<T>(this.mongoTemplate.find(query, c), pageable, this.mongoTemplate.count(query, c)).getContent();
         } catch (Exception e) {
             return Collections.emptyList();
@@ -75,7 +84,8 @@ public class DAOImpl<T> implements DAO<T> {
     @Override
     public Map<String, Object> searchBy(Class c, HashMap<String, HashMap<String, String>> criterias) {
         HashMap<String, Object> map = new HashMap<>();
-        Query query = new Query(); PageImpl page = null;
+        Query query = new Query();
+        PageImpl page = null;
 
         try {
             if (criterias.get(Keys.SEARCH) != null) {
@@ -98,6 +108,7 @@ public class DAOImpl<T> implements DAO<T> {
                 Pageable pageable = PageRequest.of(Integer.parseInt(criterias.get(Keys.PAGINATION).get(Keys.PAGE_NUMBER)), Integer.parseInt(criterias.get(Keys.PAGINATION).get(Keys.PAGE_SIZE)));
                 long total = this.mongoTemplate.count(query, c);
                 query.with(pageable);
+                query.addCriteria(Criteria.where("isDeleted").is(false));
                 page = new PageImpl<T>(this.mongoTemplate.find(query, c), pageable, total);
 
                 map.put("hasPrev", page.getNumber() > 0);

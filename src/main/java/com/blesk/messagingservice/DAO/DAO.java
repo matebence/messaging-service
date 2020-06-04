@@ -12,7 +12,7 @@ public interface DAO<T> {
 
     Boolean update(Class<T> c, String column, String id, Update update);
 
-    Boolean delete(T t);
+    Boolean delete(String column, String id);
 
     T get(Class<T> c, String column, String id);
 

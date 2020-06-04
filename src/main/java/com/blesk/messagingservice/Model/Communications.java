@@ -1,5 +1,6 @@
 package com.blesk.messagingservice.Model;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import com.blesk.messagingservice.Value.Messages;
@@ -41,6 +42,14 @@ public class Communications {
 
     private Date date = new Date();
 
+    private Boolean isDeleted = false;
+
+    private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+
+    private Timestamp updatedAt = null;
+
+    private Timestamp deletedAt = null;
+
     public Communications() {
     }
 
@@ -76,6 +85,14 @@ public class Communications {
         this.content = content;
     }
 
+    public Conversations getConversations() {
+        return this.conversations;
+    }
+
+    public void setConversations(Conversations conversations) {
+        this.conversations = conversations;
+    }
+
     public Date getDate() {
         return this.date;
     }
@@ -84,11 +101,35 @@ public class Communications {
         this.date = date;
     }
 
-    public Conversations getConversations() {
-        return this.conversations;
+    public Boolean getDeleted() {
+        return this.isDeleted;
     }
 
-    public void setConversations(Conversations conversations) {
-        this.conversations = conversations;
+    public void setDeleted(Boolean deleted) {
+        this.isDeleted = deleted;
+    }
+
+    public Timestamp getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return this.updatedAt;
+    }
+
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Timestamp getDeletedAt() {
+        return this.deletedAt;
+    }
+
+    public void setDeletedAt(Timestamp deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

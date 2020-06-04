@@ -55,7 +55,7 @@ public class CommunicationsResource {
         return entityModel;
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER')")
     @DeleteMapping("/communications/{communicationId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> deleteCommunications(@PathVariable String communicationId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -68,7 +68,7 @@ public class CommunicationsResource {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER')")
     @PutMapping("/communications/{communicationId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> updateCommunications(@Valid @RequestBody Communications communications, @PathVariable String communicationId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -103,7 +103,7 @@ public class CommunicationsResource {
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public CollectionModel<Communications> retrieveAllCommunications(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_COMMUNICATIONS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
+        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_COMMUNICATIONS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         List<Communications> communications = this.communicationsService.getAllCommunications(pageNumber, pageSize);
         if (communications == null || communications.isEmpty()) throw new MessageServiceException(Messages.GET_ALL_COMMUNICATIONS, HttpStatus.BAD_REQUEST);
@@ -120,7 +120,7 @@ public class CommunicationsResource {
     public CollectionModel<Communications> searchForCommunications(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
 
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_COMMUNICATIONS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
+        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_COMMUNICATIONS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
         if (search.get(Keys.PAGINATION) == null) throw new MessageServiceException(Messages.PAGINATION_ERROR, HttpStatus.BAD_REQUEST);
 
         Map<String, Object> communication = this.communicationsService.searchForCommunication(search);

@@ -17,7 +17,7 @@ public class ConversationsServiceImpl implements ConversationsService {
     private ConversationsDAOImpl conversationsDAO;
 
     @Autowired
-    public ConversationsServiceImpl(ConversationsDAOImpl conversationsDAO){
+    public ConversationsServiceImpl(ConversationsDAOImpl conversationsDAO) {
         this.conversationsDAO = conversationsDAO;
     }
 
@@ -38,32 +38,20 @@ public class ConversationsServiceImpl implements ConversationsService {
 
     @Override
     @Transactional
-    public Boolean deleteConversation(Conversations conversations, boolean su) {
-        if (su){
-            return this.conversationsDAO.delete(conversations);
-        } else{
-            return this.conversationsDAO.softDelete(conversations);
-        }
+    public Boolean deleteConversation(Conversations conversations) {
+        return this.conversationsDAO.delete("conversationId", conversations.getConversationId());
     }
 
     @Override
     @Transactional
-    public Conversations getConversation(String id, boolean su) {
-        if (su){
-            return this.conversationsDAO.get(Conversations.class, "conversationId", id);
-        } else {
-            return this.conversationsDAO.get("conversationId", id);
-        }
+    public Conversations getConversation(String id) {
+        return this.conversationsDAO.get(Conversations.class, "conversationId", id);
     }
 
     @Override
     @Transactional
-    public List<Conversations> getAllConversations(int pageNumber, int pageSize, boolean su) {
-        if (su){
-            return this.conversationsDAO.getAll(Conversations.class, pageNumber, pageSize);
-        } else{
-            return this.conversationsDAO.getAll(pageNumber, pageSize);
-        }
+    public List<Conversations> getAllConversations(int pageNumber, int pageSize) {
+        return this.conversationsDAO.getAll(Conversations.class, pageNumber, pageSize);
     }
 
     @Override
@@ -74,11 +62,7 @@ public class ConversationsServiceImpl implements ConversationsService {
 
     @Override
     @Transactional
-    public Map<String, Object> searchForConversation(HashMap<String, HashMap<String, String>> criterias, boolean su) {
-        if (su){
-            return this.conversationsDAO.searchBy(Conversations.class, criterias);
-        } else{
-            return this.conversationsDAO.searchBy(criterias);
-        }
+    public Map<String, Object> searchForConversation(HashMap<String, HashMap<String, String>> criterias) {
+        return this.conversationsDAO.searchBy(Conversations.class, criterias);
     }
 }

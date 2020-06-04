@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,21 +20,19 @@ public class Conversations {
     @Version
     private Long version;
 
-    private Boolean isDeleted = false;
-
     @Valid
     @NotNull(message = Messages.CONVERSATION_PARTICIPANTS_NOT_NULL)
     private Set<Users> participants = new HashSet<>();
 
+    private Boolean isDeleted = false;
+
+    private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+
+    private Timestamp updatedAt = null;
+
+    private Timestamp deletedAt = null;
+
     public Conversations() {
-    }
-
-    public Boolean getDeleted() {
-        return this.isDeleted;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        isDeleted = deleted;
     }
 
     public String getConversationId() {
@@ -52,7 +51,39 @@ public class Conversations {
         this.participants = participants;
     }
 
-    public static class Users{
+    public Boolean getDeleted() {
+        return this.isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.isDeleted = deleted;
+    }
+
+    public Timestamp getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return this.updatedAt;
+    }
+
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Timestamp getDeletedAt() {
+        return this.deletedAt;
+    }
+
+    public void setDeletedAt(Timestamp deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    public static class Users {
 
         @NotNull(message = Messages.CONVERSATION_USERS_ACCOUNT_ID_NOT_NULL)
         private Long accountId;
