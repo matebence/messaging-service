@@ -111,4 +111,13 @@ public class CommunicationsResource {
         if ((boolean) communication.get("hasNext")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForCommunications(search, httpServletRequest, httpServletResponse)).withRel("hasNext"));
         return collectionModel;
     }
+
+    @PreAuthorize("hasRole('SYSTEM')")
+    @PostMapping("/communications/join/{columName}")
+    @ResponseStatus(HttpStatus.OK)
+    public CollectionModel<Communications> joinCommunications(@PathVariable String columName, @RequestBody List<String> ids, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        List<Communications> communications = this.communicationsService.getCommunicationsForJoin(ids, columName);
+        if (communications == null || communications.isEmpty()) throw new MessageServiceException(Messages.GET_ALL_COMMUNICATIONS, HttpStatus.BAD_REQUEST);
+        return CollectionModel.of(communications);
+    }
 }

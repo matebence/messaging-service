@@ -57,6 +57,12 @@ public class StatusServiceImpl implements StatusService {
 
     @Override
     @Transactional
+    public List<Status> getStatusForJoin(List<String> ids, String columName) {
+        return this.statusDAO.getJoinValuesByColumn(Status.class, ids, columName);
+    }
+
+    @Override
+    @Transactional
     public Map<String, Object> searchForStatus(HashMap<String, HashMap<String, String>> criterias) {
         return this.statusDAO.searchBy(Status.class, criterias);
     }

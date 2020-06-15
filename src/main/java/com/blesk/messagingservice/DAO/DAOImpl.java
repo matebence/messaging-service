@@ -11,10 +11,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class DAOImpl<T> implements DAO<T> {
@@ -76,6 +73,21 @@ public class DAOImpl<T> implements DAO<T> {
             Query query = new Query().with(pageable);
             query.addCriteria(Criteria.where("isDeleted").is(false));
             return new PageImpl<T>(this.mongoTemplate.find(query, c), pageable, this.mongoTemplate.count(query, c)).getContent();
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public List<T> getJoinValuesByColumn(Class<T> c, List<String> ids, String columName) {
+        try {
+            ArrayList<Criteria> criterias = new ArrayList<Criteria>();
+            String initialId = ids.remove(0);
+            for (String id : ids){
+                criterias.add(Criteria.where(columName).is(id));
+            }
+            Query query = new Query(Criteria.where(columName).is(initialId).orOperator(criterias.toArray(new Criteria[]{})));
+            return this.mongoTemplate.find(query, c);
         } catch (Exception e) {
             return Collections.emptyList();
         }

@@ -111,4 +111,13 @@ public class StatusResource {
         if ((boolean) status.get("hasNext")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForStatus(search, httpServletRequest, httpServletResponse)).withRel("hasNext"));
         return collectionModel;
     }
+
+    @PreAuthorize("hasRole('SYSTEM')")
+    @PostMapping("/status/join/{columName}")
+    @ResponseStatus(HttpStatus.OK)
+    public CollectionModel<Status> joinStatus(@PathVariable String columName, @RequestBody List<String> ids, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        List<Status> statuses = this.statusService.getStatusForJoin(ids, columName);
+        if (statuses == null || statuses.isEmpty()) throw new MessageServiceException(Messages.GET_ALL_STATUSES, HttpStatus.BAD_REQUEST);
+        return CollectionModel.of(statuses);
+    }
 }

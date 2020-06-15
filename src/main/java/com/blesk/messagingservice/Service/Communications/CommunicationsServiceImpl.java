@@ -64,6 +64,12 @@ public class CommunicationsServiceImpl implements CommunicationsService {
 
     @Override
     @Transactional
+    public List<Communications> getCommunicationsForJoin(List<String> ids, String columName) {
+        return this.communicationsDAO.getJoinValuesByColumn(Communications.class, ids, columName);
+    }
+
+    @Override
+    @Transactional
     public Map<String, Object> searchForCommunication(HashMap<String, HashMap<String, String>> criterias) {
         return this.conversationsDAO.searchBy(Communications.class, criterias);
     }

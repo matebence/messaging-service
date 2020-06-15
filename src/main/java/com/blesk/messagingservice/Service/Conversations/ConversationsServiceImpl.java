@@ -62,6 +62,12 @@ public class ConversationsServiceImpl implements ConversationsService {
 
     @Override
     @Transactional
+    public List<Conversations> getConversationsForJoin(List<String> ids, String columName) {
+        return this.conversationsDAO.getJoinValuesByColumn(Conversations.class, ids, columName);
+    }
+
+    @Override
+    @Transactional
     public Map<String, Object> searchForConversation(HashMap<String, HashMap<String, String>> criterias) {
         return this.conversationsDAO.searchBy(Conversations.class, criterias);
     }

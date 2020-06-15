@@ -20,5 +20,7 @@ public interface ConversationsService {
 
     List<Conversations> getAllConversationsByAccontId(Long accountId);
 
+    List<Conversations> getConversationsForJoin(List<String> ids, String columName);
+
     Map<String, Object> searchForConversation(HashMap<String, HashMap<String, String>> criterias);
 }

@@ -111,4 +111,13 @@ public class ConversationsResource {
         if ((boolean) conversation.get("hasNext")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForConversations(search, httpServletRequest, httpServletResponse)).withRel("hasNext"));
         return collectionModel;
     }
+
+    @PreAuthorize("hasRole('SYSTEM')")
+    @PostMapping("/conversations/join/{columName}")
+    @ResponseStatus(HttpStatus.OK)
+    public CollectionModel<Conversations> joinConversations(@PathVariable String columName, @RequestBody List<String> ids, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        List<Conversations> conversations = this.conversationsService.getConversationsForJoin(ids, columName);
+        if (conversations == null || conversations.isEmpty()) throw new MessageServiceException(Messages.GET_ALL_CONVERSATIONS, HttpStatus.BAD_REQUEST);
+        return CollectionModel.of(conversations);
+    }
 }
