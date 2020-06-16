@@ -2,6 +2,7 @@ package com.blesk.messagingservice.DAO;
 
 import com.blesk.messagingservice.Model.Conversations;
 import com.blesk.messagingservice.Value.Keys;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Repository
 public class DAOImpl<T> implements DAO<T> {
@@ -103,7 +106,17 @@ public class DAOImpl<T> implements DAO<T> {
             if (criterias.get(Keys.SEARCH) != null) {
                 for (Object o : criterias.get(Keys.SEARCH).entrySet()) {
                     Map.Entry pair = (Map.Entry) o;
-                    query.addCriteria(Criteria.where(pair.getKey().toString()).regex(pair.getValue().toString().toLowerCase().replaceAll("\\*", ".*")));
+                    try{
+                        query.addCriteria(Criteria.where(pair.getKey().toString()).is(Integer.parseInt(pair.getValue().toString())));
+                    }catch(NumberFormatException ignored){}
+                    try{
+                        query.addCriteria(Criteria.where(pair.getKey().toString()).is(Float.parseFloat(pair.getValue().toString())));
+                    }catch(NumberFormatException ignored){}
+                    if(Pattern.compile("^[0-9a-fA-F]{24}$").matcher(pair.getValue().toString()).find()){
+                        query.addCriteria(Criteria.where(pair.getKey().toString()).is(Float.parseFloat(pair.getValue().toString())));
+                    }else{
+                        query.addCriteria(Criteria.where(pair.getKey().toString()).regex(pair.getValue().toString().toLowerCase().replaceAll("\\*", ".*")));
+                    }
                 }
             }
             if (criterias.get(Keys.ORDER_BY) != null) {
