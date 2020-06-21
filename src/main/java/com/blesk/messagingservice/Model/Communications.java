@@ -1,6 +1,5 @@
 package com.blesk.messagingservice.Model;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 import com.blesk.messagingservice.Value.Messages;
@@ -8,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Reference;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
@@ -36,7 +36,7 @@ public class Communications {
     @Size(min = 3, max = 255, message = Messages.COMMUNICATION_CONTENT_SIZE)
     private String content;
 
-    @Reference
+    @DBRef
     @NotNull(message = Messages.COMMUNICATION_CONVERSATIONS_NOT_NULL)
     private Conversations conversations;
 
@@ -44,11 +44,11 @@ public class Communications {
 
     private Boolean isDeleted = false;
 
-    private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+    private Date createdAt = new Date();
 
-    private Timestamp updatedAt = null;
+    private Date updatedAt = null;
 
-    private Timestamp deletedAt = null;
+    private Date deletedAt = null;
 
     public Communications() {
     }
@@ -109,27 +109,27 @@ public class Communications {
         this.isDeleted = deleted;
     }
 
-    public Timestamp getCreatedAt() {
+    public Date getCreatedAt() {
         return this.createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Timestamp getUpdatedAt() {
+    public Date getUpdatedAt() {
         return this.updatedAt;
     }
 
-    public void setUpdatedAt(Timestamp updatedAt) {
+    public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 
-    public Timestamp getDeletedAt() {
+    public Date getDeletedAt() {
         return this.deletedAt;
     }
 
-    public void setDeletedAt(Timestamp deletedAt) {
+    public void setDeletedAt(Date deletedAt) {
         this.deletedAt = deletedAt;
     }
 }

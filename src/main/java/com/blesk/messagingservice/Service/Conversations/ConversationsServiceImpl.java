@@ -39,7 +39,7 @@ public class ConversationsServiceImpl implements ConversationsService {
     @Override
     @Transactional
     public Boolean deleteConversation(Conversations conversations) {
-        return this.conversationsDAO.delete("conversationId", conversations.getConversationId());
+        return this.conversationsDAO.delete(Conversations.class,"conversationId", conversations.getConversationId());
     }
 
     @Override

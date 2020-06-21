@@ -40,7 +40,7 @@ public class StatusServiceImpl implements StatusService {
     @Override
     @Transactional
     public Boolean deleteStatus(Status status) {
-        return this.statusDAO.delete("statusId", status.getStatusId());
+        return this.statusDAO.delete(Status.class,"statusId", status.getStatusId());
     }
 
     @Override

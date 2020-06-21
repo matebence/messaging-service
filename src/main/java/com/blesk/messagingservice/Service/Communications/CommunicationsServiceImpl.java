@@ -47,7 +47,7 @@ public class CommunicationsServiceImpl implements CommunicationsService {
     @Override
     @Transactional
     public Boolean deleteCommunication(Communications communications) {
-        return this.communicationsDAO.delete("communicationId", communications.getCommunicationId());
+        return this.communicationsDAO.delete(Communications.class,"communicationId", communications.getCommunicationId());
     }
 
     @Override

@@ -1,8 +1,6 @@
 package com.blesk.messagingservice.DAO;
 
-import com.blesk.messagingservice.Model.Conversations;
 import com.blesk.messagingservice.Value.Keys;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -11,9 +9,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Repository
@@ -37,22 +33,24 @@ public class DAOImpl<T> implements DAO<T> {
         try {
             Query query = new Query();
             query.addCriteria(Criteria.where(column).is(id));
-            update.set("updatedAt", new Timestamp(System.currentTimeMillis()));
+            update.set("updatedAt", new Date());
             return this.mongoTemplate.updateFirst(query, update, c).getModifiedCount() == 1;
         } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
             return Boolean.FALSE;
         }
     }
 
     @Override
-    public Boolean delete(String column, String id) {
+    public Boolean delete(Class<T> c, String column, String id) {
         try {
             Query query = new Query();
             query.addCriteria(Criteria.where(column).is(id));
             Update update = new Update();
             update.set("isDeleted", true);
-            update.set("deletedAt", new Timestamp(System.currentTimeMillis()));
-            return this.mongoTemplate.updateFirst(query, update, Conversations.class).getModifiedCount() == 1;
+            update.set("deletedAt", new Date());
+            return this.mongoTemplate.updateFirst(query, update, c).getModifiedCount() == 1;
         } catch (Exception e) {
             return Boolean.FALSE;
         }
@@ -84,12 +82,8 @@ public class DAOImpl<T> implements DAO<T> {
     @Override
     public List<T> getJoinValuesByColumn(Class<T> c, List<String> ids, String columName) {
         try {
-            ArrayList<Criteria> criterias = new ArrayList<Criteria>();
-            String initialId = ids.remove(0);
-            for (String id : ids){
-                criterias.add(Criteria.where(columName).is(id));
-            }
-            Query query = new Query(Criteria.where(columName).is(initialId).orOperator(criterias.toArray(new Criteria[]{})));
+            Query query = new Query();
+            query.addCriteria(Criteria.where(columName).in(ids).andOperator(Criteria.where("isDeleted").is(false)));
             return this.mongoTemplate.find(query, c);
         } catch (Exception e) {
             return Collections.emptyList();
