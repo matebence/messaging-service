@@ -57,7 +57,7 @@ public class ConversationController {
         if (communication == null) return;
         for (Conversations.Users users : communications.getConversations().getParticipants()) {
             if (!communications.getSender().equals(users.getAccountId())) {
-                Status status = this.statusService.getStatus(users.getStatusId());
+                Status status = this.statusService.getStatus(users.getStatus().getStatusId());
 
                 Notifications notifications = new Notifications();
                 notifications.setBody(communications.getContent());

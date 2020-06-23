@@ -3,10 +3,12 @@ package com.blesk.messagingservice.Model;
 import com.blesk.messagingservice.Value.Messages;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,21 +21,19 @@ public class Conversations {
     @Version
     private Long version;
 
-    private Boolean isDeleted = false;
-
     @Valid
     @NotNull(message = Messages.CONVERSATION_PARTICIPANTS_NOT_NULL)
     private Set<Users> participants = new HashSet<>();
 
+    private Boolean isDeleted = false;
+
+    private Date createdAt = new Date();
+
+    private Date updatedAt = null;
+
+    private Date deletedAt = null;
+
     public Conversations() {
-    }
-
-    public Boolean getDeleted() {
-        return this.isDeleted;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        isDeleted = deleted;
     }
 
     public String getConversationId() {
@@ -52,13 +52,46 @@ public class Conversations {
         this.participants = participants;
     }
 
-    public static class Users{
+    public Boolean getDeleted() {
+        return this.isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.isDeleted = deleted;
+    }
+
+    public Date getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return this.updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Date getDeletedAt() {
+        return this.deletedAt;
+    }
+
+    public void setDeletedAt(Date deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    public static class Users {
 
         @NotNull(message = Messages.CONVERSATION_USERS_ACCOUNT_ID_NOT_NULL)
         private Long accountId;
 
+        @DBRef
         @NotNull(message = Messages.CONVERSATION_STATUS_ID_NOT_NULL)
-        private String statusId;
+        private Status status;
 
         @NotNull(message = Messages.CONVERSATION_USERS_USER_NAME_NOT_NULL)
         private String userName;
@@ -78,12 +111,12 @@ public class Conversations {
             this.accountId = accountId;
         }
 
-        public String getStatusId() {
-            return this.statusId;
+        public Status getStatus() {
+            return this.status;
         }
 
-        public void setStatusId(String statusId) {
-            this.statusId = statusId;
+        public void setStatus(Status status) {
+            this.status = status;
         }
 
         public String getUserName() {

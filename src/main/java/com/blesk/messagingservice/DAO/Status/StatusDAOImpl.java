@@ -16,8 +16,13 @@ public class StatusDAOImpl extends DAOImpl<Status> implements StatusDAO {
             Query query = new Query();
             query.addCriteria(Criteria.where("userName").is(status.getUserName()));
             Update update = new Update();
-            update.set("state", status.getState());
+            update.set("userName", status.getUserName());
             update.set("token", status.getToken());
+            update.set("state", status.getState());
+            update.set("isDeleted", status.getDeleted());
+            update.set("createdAt", status.getCreatedAt());
+            update.set("updatedAt", status.getUpdatedAt());
+            update.set("deletedAt", status.getDeletedAt());
             this.mongoTemplate.upsert(query, update, Status.class);
             return this.mongoTemplate.findOne(query, Status.class);
         } catch (Exception e) {

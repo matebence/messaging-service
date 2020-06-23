@@ -40,7 +40,7 @@ public class StatusServiceImpl implements StatusService {
     @Override
     @Transactional
     public Boolean deleteStatus(Status status) {
-        return this.statusDAO.delete(status);
+        return this.statusDAO.delete(Status.class,"statusId", status.getStatusId());
     }
 
     @Override
@@ -53,6 +53,12 @@ public class StatusServiceImpl implements StatusService {
     @Transactional
     public List<Status> getAllStatuses(int pageNumber, int pageSize) {
         return this.statusDAO.getAll(Status.class, pageNumber, pageSize);
+    }
+
+    @Override
+    @Transactional
+    public List<Status> getStatusForJoin(List<String> ids, String columName) {
+        return this.statusDAO.getJoinValuesByColumn(Status.class, ids, columName);
     }
 
     @Override

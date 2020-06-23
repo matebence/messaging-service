@@ -1,6 +1,5 @@
 package com.blesk.messagingservice.Controller.Resources;
 
-import com.blesk.messagingservice.DTO.JwtMapper;
 import com.blesk.messagingservice.Exception.MessageServiceException;
 import com.blesk.messagingservice.Model.Conversations;
 import com.blesk.messagingservice.Service.Conversations.ConversationsServiceImpl;
@@ -12,8 +11,6 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,9 +41,6 @@ public class ConversationsResource {
     @PostMapping("/conversations")
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<Conversations> createConversations(@Valid @RequestBody Conversations conversations, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("CREATE_CONVERSATIONS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
         Conversations conversation = this.conversationsService.createConversation(conversations);
         if (conversation == null) throw new MessageServiceException(Messages.CREATE_CONVERSATION, HttpStatus.BAD_REQUEST);
 
@@ -59,12 +53,9 @@ public class ConversationsResource {
     @DeleteMapping("/conversations/{conversationId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> deleteConversations(@PathVariable String conversationId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("DELETE_CONVERSATIONS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
-        Conversations conversation = this.conversationsService.getConversation(conversationId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Conversations conversation = this.conversationsService.getConversation(conversationId);
         if (conversation == null) throw new MessageServiceException(Messages.GET_CONVERSATION, HttpStatus.NOT_FOUND);
-        if (!this.conversationsService.deleteConversation(conversation, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")))) throw new MessageServiceException(Messages.DELETE_CONVERSATION, HttpStatus.BAD_REQUEST);
+        if (!this.conversationsService.deleteConversation(conversation)) throw new MessageServiceException(Messages.DELETE_CONVERSATION, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
@@ -72,10 +63,7 @@ public class ConversationsResource {
     @PutMapping("/conversations/{conversationId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> updateConversations(@Valid @RequestBody Conversations conversations, @PathVariable String conversationId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("UPDATE_CONVERSATIONS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
-        Conversations conversation = this.conversationsService.getConversation(conversationId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Conversations conversation = this.conversationsService.getConversation(conversationId);
         if (conversation == null) throw new MessageServiceException(Messages.GET_CONVERSATION, HttpStatus.BAD_REQUEST);
 
         if (!this.conversationsService.updateConversation(conversation, conversations)) throw new MessageServiceException(Messages.UPDATE_CONVERSATION, HttpStatus.BAD_REQUEST);
@@ -86,10 +74,7 @@ public class ConversationsResource {
     @GetMapping("/conversations/{conversationId}")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Conversations> retrieveConversations(@PathVariable String conversationId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_CONVERSATIONS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
-        Conversations conversation = this.conversationsService.getConversation(conversationId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Conversations conversation = this.conversationsService.getConversation(conversationId);
         if (conversation == null) throw new MessageServiceException(Messages.GET_CONVERSATION, HttpStatus.BAD_REQUEST);
 
         EntityModel<Conversations> entityModel = EntityModel.of(conversation);
@@ -102,10 +87,7 @@ public class ConversationsResource {
     @GetMapping("/conversations/page/{pageNumber}/limit/{pageSize}")
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public CollectionModel<Conversations> retrieveAllConversations(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_CONVERSATIONS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
-        List<Conversations> conversations = this.conversationsService.getAllConversations(pageNumber, pageSize, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        List<Conversations> conversations = this.conversationsService.getAllConversations(pageNumber, pageSize);
         if (conversations == null || conversations.isEmpty()) throw new MessageServiceException(Messages.GET_ALL_CONVERSATIONS, HttpStatus.BAD_REQUEST);
 
         CollectionModel<Conversations> collectionModel = CollectionModel.of(conversations);
@@ -118,12 +100,8 @@ public class ConversationsResource {
     @PostMapping("/conversations/search")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<Conversations> searchForConversations(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_CONVERSATIONS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
         if (search.get(Keys.PAGINATION) == null) throw new MessageServiceException(Messages.PAGINATION_ERROR, HttpStatus.BAD_REQUEST);
-
-        Map<String, Object> conversation = this.conversationsService.searchForConversation(search, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Map<String, Object> conversation = this.conversationsService.searchForConversation(search);
         if (conversation == null || conversation.isEmpty()) throw new MessageServiceException(Messages.SEARCH_ERROR, HttpStatus.BAD_REQUEST);
 
         CollectionModel<Conversations> collectionModel = CollectionModel.of((List<Conversations>) conversation.get("results"));
@@ -132,5 +110,14 @@ public class ConversationsResource {
         if ((boolean) conversation.get("hasPrev")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForConversations(search, httpServletRequest, httpServletResponse)).withRel("hasPrev"));
         if ((boolean) conversation.get("hasNext")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForConversations(search, httpServletRequest, httpServletResponse)).withRel("hasNext"));
         return collectionModel;
+    }
+
+    @PreAuthorize("hasRole('SYSTEM')")
+    @PostMapping("/conversations/join/{columName}")
+    @ResponseStatus(HttpStatus.OK)
+    public CollectionModel<Conversations> joinConversations(@PathVariable String columName, @RequestBody List<String> ids, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        List<Conversations> conversations = this.conversationsService.getConversationsForJoin(ids, columName);
+        if (conversations == null || conversations.isEmpty()) throw new MessageServiceException(Messages.GET_ALL_CONVERSATIONS, HttpStatus.BAD_REQUEST);
+        return CollectionModel.of(conversations);
     }
 }

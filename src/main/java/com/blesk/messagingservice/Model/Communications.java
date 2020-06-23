@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Reference;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
@@ -35,11 +36,19 @@ public class Communications {
     @Size(min = 3, max = 255, message = Messages.COMMUNICATION_CONTENT_SIZE)
     private String content;
 
-    @Reference
+    @DBRef
     @NotNull(message = Messages.COMMUNICATION_CONVERSATIONS_NOT_NULL)
     private Conversations conversations;
 
     private Date date = new Date();
+
+    private Boolean isDeleted = false;
+
+    private Date createdAt = new Date();
+
+    private Date updatedAt = null;
+
+    private Date deletedAt = null;
 
     public Communications() {
     }
@@ -76,6 +85,14 @@ public class Communications {
         this.content = content;
     }
 
+    public Conversations getConversations() {
+        return this.conversations;
+    }
+
+    public void setConversations(Conversations conversations) {
+        this.conversations = conversations;
+    }
+
     public Date getDate() {
         return this.date;
     }
@@ -84,11 +101,35 @@ public class Communications {
         this.date = date;
     }
 
-    public Conversations getConversations() {
-        return this.conversations;
+    public Boolean getDeleted() {
+        return this.isDeleted;
     }
 
-    public void setConversations(Conversations conversations) {
-        this.conversations = conversations;
+    public void setDeleted(Boolean deleted) {
+        this.isDeleted = deleted;
+    }
+
+    public Date getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return this.updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Date getDeletedAt() {
+        return this.deletedAt;
+    }
+
+    public void setDeletedAt(Date deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

@@ -1,6 +1,5 @@
 package com.blesk.messagingservice.Controller.Resources;
 
-import com.blesk.messagingservice.DTO.JwtMapper;
 import com.blesk.messagingservice.Exception.MessageServiceException;
 import com.blesk.messagingservice.Model.Status;
 import com.blesk.messagingservice.Service.Status.StatusServiceImpl;
@@ -12,8 +11,6 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,13 +37,10 @@ public class StatusResource {
         this.statusService = statusService;
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @PostMapping("/status")
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<Status> createStatus(@Valid @RequestBody Status statuses, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("CREATE_STATUS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
         Status status = this.statusService.createStatus(statuses);
         if (status == null) throw new MessageServiceException(Messages.CREATE_STATUS, HttpStatus.BAD_REQUEST);
 
@@ -59,22 +53,16 @@ public class StatusResource {
     @DeleteMapping("/status/{statusId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> deleteStatus(@PathVariable String statusId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("DELETE_STATUS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
         Status status = this.statusService.getStatus(statusId);
         if (status == null) throw new MessageServiceException(Messages.GET_STATUS, HttpStatus.NOT_FOUND);
         if (!this.statusService.deleteStatus(status)) throw new MessageServiceException(Messages.DELETE_STATUS, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @PutMapping("/status/{statusId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> updateStatus(@Valid @RequestBody Status statuses, @PathVariable String statusId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("UPDATE_STATUS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
         Status status = this.statusService.getStatus(statusId);
         if (status == null) throw new MessageServiceException(Messages.GET_STATUS, HttpStatus.BAD_REQUEST);
 
@@ -82,13 +70,10 @@ public class StatusResource {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @GetMapping("/status/{statusId}")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Status> retrieveStatus(@PathVariable String statusId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_STATUS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
         Status status = this.statusService.getStatus(statusId);
         if (status == null) throw new MessageServiceException(Messages.GET_STATUS, HttpStatus.BAD_REQUEST);
 
@@ -98,13 +83,10 @@ public class StatusResource {
         return entityModel;
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @GetMapping("/status/page/{pageNumber}/limit/{pageSize}")
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public CollectionModel<Status> retrieveAllStatuses(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_STATUSES")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
         List<Status> status = this.statusService.getAllStatuses(pageNumber, pageSize);
         if (status == null || status.isEmpty()) throw new MessageServiceException(Messages.GET_ALL_STATUSES, HttpStatus.BAD_REQUEST);
 
@@ -114,15 +96,11 @@ public class StatusResource {
         return collectionModel;
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @PostMapping("/status/search")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<Status> searchForStatus(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_STATUSES")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
         if (search.get(Keys.PAGINATION) == null) throw new MessageServiceException(Messages.PAGINATION_ERROR, HttpStatus.BAD_REQUEST);
-
         Map<String, Object> status = this.statusService.searchForStatus(search);
         if (status == null || status.isEmpty()) throw new MessageServiceException(Messages.SEARCH_ERROR, HttpStatus.BAD_REQUEST);
 
@@ -132,5 +110,14 @@ public class StatusResource {
         if ((boolean) status.get("hasPrev")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForStatus(search, httpServletRequest, httpServletResponse)).withRel("hasPrev"));
         if ((boolean) status.get("hasNext")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForStatus(search, httpServletRequest, httpServletResponse)).withRel("hasNext"));
         return collectionModel;
+    }
+
+    @PreAuthorize("hasRole('SYSTEM')")
+    @PostMapping("/status/join/{columName}")
+    @ResponseStatus(HttpStatus.OK)
+    public CollectionModel<Status> joinStatus(@PathVariable String columName, @RequestBody List<String> ids, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        List<Status> statuses = this.statusService.getStatusForJoin(ids, columName);
+        if (statuses == null || statuses.isEmpty()) throw new MessageServiceException(Messages.GET_ALL_STATUSES, HttpStatus.BAD_REQUEST);
+        return CollectionModel.of(statuses);
     }
 }

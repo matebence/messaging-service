@@ -1,6 +1,5 @@
 package com.blesk.messagingservice.Controller.Resources;
 
-import com.blesk.messagingservice.DTO.JwtMapper;
 import com.blesk.messagingservice.Exception.MessageServiceException;
 import com.blesk.messagingservice.Model.Communications;
 import com.blesk.messagingservice.Service.Communications.CommunicationsServiceImpl;
@@ -12,8 +11,6 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,9 +41,6 @@ public class CommunicationsResource {
     @PostMapping("/communications")
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<Communications> createCommunications(@Valid @RequestBody Communications communications, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("CREATE_COMMUNICATIONS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
         Communications communication = this.communicationsService.createCommunication(communications);
         if (communication == null) throw new MessageServiceException(Messages.CREATE_COMMUNICATION, HttpStatus.BAD_REQUEST);
 
@@ -55,26 +49,20 @@ public class CommunicationsResource {
         return entityModel;
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER')")
     @DeleteMapping("/communications/{communicationId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> deleteCommunications(@PathVariable String communicationId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("DELETE_COMMUNICATIONS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
         Communications communication = this.communicationsService.getCommunication(communicationId);
         if (communication == null) throw new MessageServiceException(Messages.GET_COMMUNICATION, HttpStatus.NOT_FOUND);
         if (!this.communicationsService.deleteCommunication(communication)) throw new MessageServiceException(Messages.DELETE_COMMUNICATION, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER')")
     @PutMapping("/communications/{communicationId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> updateCommunications(@Valid @RequestBody Communications communications, @PathVariable String communicationId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("UPDATE_COMMUNICATIONS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
         Communications communication = this.communicationsService.getCommunication(communicationId);
         if (communication == null) throw new MessageServiceException(Messages.GET_COMMUNICATION, HttpStatus.BAD_REQUEST);
 
@@ -86,9 +74,6 @@ public class CommunicationsResource {
     @GetMapping("/communications/{communicationId}")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Communications> retrieveCommunications(@PathVariable String communicationId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_COMMUNICATIONS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
         Communications communication = this.communicationsService.getCommunication(communicationId);
         if (communication == null) throw new MessageServiceException(Messages.GET_COMMUNICATION, HttpStatus.BAD_REQUEST);
 
@@ -102,9 +87,6 @@ public class CommunicationsResource {
     @GetMapping("/communications/page/{pageNumber}/limit/{pageSize}")
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public CollectionModel<Communications> retrieveAllCommunications(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_COMMUNICATIONS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
         List<Communications> communications = this.communicationsService.getAllCommunications(pageNumber, pageSize);
         if (communications == null || communications.isEmpty()) throw new MessageServiceException(Messages.GET_ALL_COMMUNICATIONS, HttpStatus.BAD_REQUEST);
 
@@ -118,11 +100,7 @@ public class CommunicationsResource {
     @PostMapping("/communications/search")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<Communications> searchForCommunications(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_COMMUNICATIONS")) throw new MessageServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
         if (search.get(Keys.PAGINATION) == null) throw new MessageServiceException(Messages.PAGINATION_ERROR, HttpStatus.BAD_REQUEST);
-
         Map<String, Object> communication = this.communicationsService.searchForCommunication(search);
         if (communication == null || communication.isEmpty()) throw new MessageServiceException(Messages.SEARCH_ERROR, HttpStatus.BAD_REQUEST);
 
@@ -132,5 +110,14 @@ public class CommunicationsResource {
         if ((boolean) communication.get("hasPrev")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForCommunications(search, httpServletRequest, httpServletResponse)).withRel("hasPrev"));
         if ((boolean) communication.get("hasNext")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForCommunications(search, httpServletRequest, httpServletResponse)).withRel("hasNext"));
         return collectionModel;
+    }
+
+    @PreAuthorize("hasRole('SYSTEM')")
+    @PostMapping("/communications/join/{columName}")
+    @ResponseStatus(HttpStatus.OK)
+    public CollectionModel<Communications> joinCommunications(@PathVariable String columName, @RequestBody List<String> ids, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        List<Communications> communications = this.communicationsService.getCommunicationsForJoin(ids, columName);
+        if (communications == null || communications.isEmpty()) throw new MessageServiceException(Messages.GET_ALL_COMMUNICATIONS, HttpStatus.BAD_REQUEST);
+        return CollectionModel.of(communications);
     }
 }

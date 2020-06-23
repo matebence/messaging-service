@@ -47,7 +47,7 @@ public class CommunicationsServiceImpl implements CommunicationsService {
     @Override
     @Transactional
     public Boolean deleteCommunication(Communications communications) {
-        return this.communicationsDAO.delete(communications);
+        return this.communicationsDAO.delete(Communications.class,"communicationId", communications.getCommunicationId());
     }
 
     @Override
@@ -60,6 +60,12 @@ public class CommunicationsServiceImpl implements CommunicationsService {
     @Transactional
     public List<Communications> getAllCommunications(int pageNumber, int pageSize) {
         return this.communicationsDAO.getAll(Communications.class, pageNumber, pageSize);
+    }
+
+    @Override
+    @Transactional
+    public List<Communications> getCommunicationsForJoin(List<String> ids, String columName) {
+        return this.communicationsDAO.getJoinValuesByColumn(Communications.class, ids, columName);
     }
 
     @Override

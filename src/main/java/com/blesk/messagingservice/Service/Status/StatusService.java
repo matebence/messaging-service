@@ -18,5 +18,7 @@ public interface StatusService {
 
     List<Status> getAllStatuses(int pageNumber, int pageSize);
 
+    List<Status> getStatusForJoin(List<String> ids, String columName);
+
     Map<String, Object> searchForStatus(HashMap<String, HashMap<String, String>> criterias);
 }

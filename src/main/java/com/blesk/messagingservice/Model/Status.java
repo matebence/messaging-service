@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 @Document(collection = "status")
 public class Status {
@@ -35,6 +36,14 @@ public class Status {
     @Contains(enumClass = State.class, message = Messages.STATUS_STATE_CONTAINS)
     @NotNull(message = Messages.STATUS_STATE_NOT_NULL)
     private String state;
+
+    private Boolean isDeleted = false;
+
+    private Date createdAt = new Date();
+
+    private Date updatedAt = null;
+
+    private Date deletedAt = null;
 
     public Status() {
     }
@@ -69,5 +78,37 @@ public class Status {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public Boolean getDeleted() {
+        return this.isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.isDeleted = deleted;
+    }
+
+    public Date getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return this.updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Date getDeletedAt() {
+        return this.deletedAt;
+    }
+
+    public void setDeletedAt(Date deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }
