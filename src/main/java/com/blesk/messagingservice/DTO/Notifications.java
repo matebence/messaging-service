@@ -8,7 +8,7 @@ public class Notifications {
     private String body;
     private String token;
     private Map<String, String> data;
-    private String imageUrl = "blesk-default-notifcation-icon.jpg";
+    private String imageUrl = "https://firebasestorage.googleapis.com/v0/b/blesk-microservice-app.appspot.com/o/blesk-default-notifcation-icon.jpg?alt=media&token=c9dd721b-8cac-4d8b-bb00-4f419bdfbe51";
 
     public Notifications(String title, String body, String token) {
         this.title = title;
