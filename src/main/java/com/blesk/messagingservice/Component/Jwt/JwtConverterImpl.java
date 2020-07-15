@@ -21,9 +21,6 @@ public class JwtConverterImpl extends DefaultAccessTokenConverter implements Jwt
         OAuth2Authentication oAuth2Authentication = super.extractAuthentication(map);
         JwtMapper jwtMapper = new JwtMapper();
 
-        if (map.get("login_id") != null)
-            jwtMapper.setLogin_id((Integer) map.get("login_id"));
-
         if (map.get("account_id") != null)
             jwtMapper.setAccount_id((Integer) map.get("account_id"));
 
@@ -38,9 +35,6 @@ public class JwtConverterImpl extends DefaultAccessTokenConverter implements Jwt
 
         if (map.get("client_id") != null)
             jwtMapper.setClient_id((String) map.get("client_id"));
-
-        if (map.get("activated") != null)
-            jwtMapper.setActivated((Boolean) map.get("activated"));
 
         oAuth2Authentication.setDetails(jwtMapper);
         return oAuth2Authentication;
