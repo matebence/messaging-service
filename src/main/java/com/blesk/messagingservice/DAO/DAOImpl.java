@@ -100,16 +100,12 @@ public class DAOImpl<T> implements DAO<T> {
             if (criterias.get(Keys.SEARCH) != null) {
                 for (Object o : criterias.get(Keys.SEARCH).entrySet()) {
                     Map.Entry pair = (Map.Entry) o;
-                    try{
-                        query.addCriteria(Criteria.where(pair.getKey().toString()).is(Integer.parseInt(pair.getValue().toString())));
-                    }catch(NumberFormatException ignored){}
-                    try{
-                        query.addCriteria(Criteria.where(pair.getKey().toString()).is(Float.parseFloat(pair.getValue().toString())));
-                    }catch(NumberFormatException ignored){}
-                    if(Pattern.compile("^[0-9a-fA-F]{24}$").matcher(pair.getValue().toString()).find()){
-                        query.addCriteria(Criteria.where(pair.getKey().toString()).is(Float.parseFloat(pair.getValue().toString())));
-                    }else{
+                    if (Pattern.compile("^[0-9a-fA-F]{24}$").matcher(pair.getValue().toString()).find()){
+                        query.addCriteria(Criteria.where(pair.getKey().toString()).is(pair.getValue().toString()));
+                    } else if(Pattern.compile("^[\\D][a-zA-Z0-9 ]*$").matcher(pair.getValue().toString()).find()) {
                         query.addCriteria(Criteria.where(pair.getKey().toString()).regex(pair.getValue().toString().toLowerCase().replaceAll("\\*", ".*")));
+                    } else {
+                        query.addCriteria(Criteria.where(pair.getKey().toString()).is(Float.parseFloat(pair.getValue().toString())));
                     }
                 }
             }
