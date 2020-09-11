@@ -11,7 +11,7 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
-        if(stompEndpointRegistry != null) stompEndpointRegistry.addEndpoint("/ws").setAllowedOrigins("http://192.168.99.100:8765").withSockJS();
+        if(stompEndpointRegistry != null) stompEndpointRegistry.addEndpoint("/ws").setAllowedOrigins("http://gateway-server:8765").withSockJS();
     }
 
     @Override
@@ -20,10 +20,5 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
             messageBrokerRegistry.setApplicationDestinationPrefixes("/blesk");
             messageBrokerRegistry.enableSimpleBroker("/conversations", "/status");
         }
-    }
-
-    @Override
-    protected boolean sameOriginDisabled() {
-        return true;
     }
 }
