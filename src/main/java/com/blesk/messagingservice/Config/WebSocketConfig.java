@@ -41,6 +41,7 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
     @Override
     public String executeInfoRequest(URI infoUrl, HttpHeaders headers) {
         HttpGet httpGet = new HttpGet(infoUrl);
+        httpGet.setHeader("Access-Control-Allow-Origin", "http://localhost:4300");
         HttpClient httpClient = HttpClients.createDefault();
 
         try {
