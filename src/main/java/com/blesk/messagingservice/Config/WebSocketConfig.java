@@ -11,7 +11,7 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
-        if(stompEndpointRegistry != null) stompEndpointRegistry.addEndpoint("/ws").withSockJS();
+        if(stompEndpointRegistry != null) stompEndpointRegistry.addEndpoint("/ws").setAllowedOrigins("http://192.168.99.100:8765").withSockJS();
     }
 
     @Override
