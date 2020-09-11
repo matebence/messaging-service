@@ -21,9 +21,4 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
             messageBrokerRegistry.enableSimpleBroker("/conversations", "/status");
         }
     }
-
-    @Override
-    protected boolean sameOriginDisabled() {
-        return true;
-    }
 }
