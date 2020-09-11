@@ -1,5 +1,6 @@
 package com.blesk.messagingservice.Config;
 
+import com.google.cloud.storage.HttpMethod;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 @Configuration
 public class SpringSecurity extends WebSecurityConfigurerAdapter {
@@ -27,13 +30,12 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
     public FilterRegistrationBean corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
-        CorsConfiguration config = new CorsConfiguration();
-        config.setMaxAge(3600L);
+        final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Arrays.asList("http://localhost:4200, http://localhost:4300, http://localhost:4400".split(", ")));
-        config.setAllowedHeaders(Arrays.asList("X-Requested-With, Origin, Content-Type, Accept, Authorization, X-Auth-Token".split(", ")));
-        config.setAllowedMethods(Arrays.asList("HEAD, GET, PUT, POST, DELETE, PATCH, OPTIONS".split(", ")));
-        config.setExposedHeaders(Arrays.asList("X-Auth-Token, Authorization".split(", ")));
+        config.setAllowedOrigins(Collections.singletonList("*"));
+        config.setAllowedHeaders(Collections.singletonList("*"));
+        config.setAllowedMethods(Arrays.stream(HttpMethod.values()).map(HttpMethod::name).collect(Collectors.toList()));
+        source.registerCorsConfiguration("/**", config);
 
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(new CorsFilter(source));
         filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
