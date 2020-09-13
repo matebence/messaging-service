@@ -30,7 +30,6 @@ public class Status {
     private String userName;
 
     @Indexed(unique = true)
-    @NotNull(message = Messages.STATUS_TOKEN_NOT_NULL)
     private String token;
 
     @Contains(enumClass = State.class, message = Messages.STATUS_STATE_CONTAINS)

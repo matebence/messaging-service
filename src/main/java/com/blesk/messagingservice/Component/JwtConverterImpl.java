@@ -1,4 +1,4 @@
-package com.blesk.messagingservice.Component.Jwt;
+package com.blesk.messagingservice.Component;
 
 import com.blesk.messagingservice.DTO.JwtMapper;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;

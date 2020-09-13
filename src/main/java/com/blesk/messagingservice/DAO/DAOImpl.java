@@ -36,8 +36,6 @@ public class DAOImpl<T> implements DAO<T> {
             update.set("updatedAt", new Date());
             return this.mongoTemplate.updateFirst(query, update, c).getModifiedCount() == 1;
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
             return Boolean.FALSE;
         }
     }

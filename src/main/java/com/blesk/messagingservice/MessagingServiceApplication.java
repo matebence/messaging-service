@@ -7,13 +7,11 @@ import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 
 @EnableWebSecurity
 @EnableResourceServer
 @EnableDiscoveryClient
 @SpringBootApplication
-@EnableWebSocketMessageBroker
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class MessagingServiceApplication {
