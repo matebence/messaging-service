@@ -1,4 +1,4 @@
-package com.blesk.messagingservice.Controller.Resources;
+package com.blesk.messagingservice.Controller;
 
 import com.blesk.messagingservice.Exception.MessageServiceException;
 import com.blesk.messagingservice.Model.Status;

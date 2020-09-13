@@ -5,6 +5,8 @@ public class Messages {
     public static final String SEARCH_ERROR = "Kritériám nevyhoveli žiadné záznamy";
     public static final String PAGINATION_ERROR = "Požiadavku sa nepodarilo spracovať, chyba stránkovania";
     public static final String CONTAINS_VALIDATOR_DEFAULT = "Tento údaj neevidujeme v databáze";
+    public static final String CONVERSATION_PARTICIPANTS_NOT_NULL = "Nezadali ste účastníkov konverzácie";
+
 
 
     public static final String TYPE_MISMATCH_EXCEPTION = "Nesprávný formát URL adresi";
@@ -14,10 +16,9 @@ public class Messages {
     public static final String AUTH_EXCEPTION = "Ľutujeme, ale stránka nie je k dispozícií";
     public static final String AUTH_REQUIRED_EXCEPTION = "Prístup odmietnutý";
     public static final String MONGO_EXCEPTION = "Operácia sa neuskutočnila";
-    public static final String FIREBASE_EXCEPTION = "Inicializácia Firebase bola neúspešná";
     public static final String EXCEPTION = "Nastala neočakávaná chyba";
 
-    public static final String CONVERSATION_PARTICIPANTS_NOT_NULL = "Nezadali ste účastníkov konverzácie";
+
 
     public static final String STATUS_USER_NAME_NOT_NULL = "Nezadali ste používateľské meno";
     public static final String STATUS_TOKEN_NOT_NULL = "Chyba v inicializácií FCM tokenu";
