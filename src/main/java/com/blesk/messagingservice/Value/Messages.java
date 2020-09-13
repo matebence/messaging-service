@@ -21,7 +21,6 @@ public class Messages {
 
 
     public static final String STATUS_USER_NAME_NOT_NULL = "Nezadali ste používateľské meno";
-    public static final String STATUS_TOKEN_NOT_NULL = "Chyba v inicializácií FCM tokenu";
     public static final String STATUS_USER_NAME_SIZE = "Používateľské meno je príliž krátke alebo dlhé";
     public static final String STATUS_STATE_NOT_NULL = "Nezadali ste status používateľa";
     public static final String STATUS_STATE_CONTAINS = "Typ statusu neexistuje";
