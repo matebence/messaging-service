@@ -93,12 +93,9 @@ public class Conversations {
         @NotNull(message = Messages.CONVERSATION_STATUS_ID_NOT_NULL)
         private Status status;
 
-        @NotNull(message = Messages.CONVERSATION_USERS_USER_NAME_NOT_NULL)
-        private String userName;
+        private String lastConversationId = null;
 
-        private String lastConversionId = null;
-
-        private String lastReadedConversionId = null;
+        private String lastReadedConversationId = null;
 
         public Users() {
         }
@@ -119,28 +116,20 @@ public class Conversations {
             this.status = status;
         }
 
-        public String getUserName() {
-            return this.userName;
+        public String getLastConversationId() {
+            return this.lastConversationId;
         }
 
-        public void setUserName(String userName) {
-            this.userName = userName;
+        public void setLastConversationId(String lastConversationId) {
+            this.lastConversationId = lastConversationId;
         }
 
-        public String getLastConversionId() {
-            return this.lastConversionId;
+        public String getLastReadedConversationId() {
+            return this.lastReadedConversationId;
         }
 
-        public void setLastConversionId(String lastConversionId) {
-            this.lastConversionId = lastConversionId;
-        }
-
-        public String getLastReadedConversionId() {
-            return this.lastReadedConversionId;
-        }
-
-        public void setLastReadedConversionId(String lastReadedConversionId) {
-            this.lastReadedConversionId = lastReadedConversionId;
+        public void setLastReadedConversationId(String lastReadedConversationId) {
+            this.lastReadedConversationId = lastReadedConversationId;
         }
     }
 }
