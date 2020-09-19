@@ -28,7 +28,6 @@ public class CommunicationsServiceImpl implements CommunicationsService {
     @Override
     @Transactional
     public Communications createCommunication(Communications communications) {
-        this.conversationsDAO.save(communications.getConversations());
         return this.communicationsDAO.save(communications);
     }
 
